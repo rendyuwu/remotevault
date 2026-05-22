@@ -8,7 +8,8 @@
     "build": "vite build",
     "preview": "vite preview",
     "tauri": "tauri",
-    "hygiene": "bash scripts/check-no-slop.sh && bash scripts/check-file-sizes.sh"
+    "hygiene": "bash scripts/check-no-slop.sh && bash scripts/check-file-sizes.sh",
+    "prepare": "lefthook install"
   },
   "dependencies": {
     "@solidjs/router": "^0.15.3",
