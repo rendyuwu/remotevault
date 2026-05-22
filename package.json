@@ -7,7 +7,8 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "tauri": "tauri"
+    "tauri": "tauri",
+    "hygiene": "bash scripts/check-no-slop.sh && bash scripts/check-file-sizes.sh"
   },
   "dependencies": {
     "@solidjs/router": "^0.15.3",
