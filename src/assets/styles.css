@@ -343,7 +343,7 @@ code, kbd, pre, samp { font-family: var(--font-mono); }
   justify-content: center;
   gap: var(--space-2);
   padding: 0 var(--space-4);
-  height: 32px;
+  height: var(--space-7);
   border-radius: var(--radius-sm);
   border: 1px solid transparent;
   background: transparent;
@@ -387,9 +387,9 @@ code, kbd, pre, samp { font-family: var(--font-mono); }
 }
 .btn-danger:hover { background: var(--danger-hover); }
 
-.btn-lg { height: 40px; padding: 0 var(--space-5); font-size: var(--fs-md); }
-.btn-sm { height: 26px; padding: 0 var(--space-3); font-size: var(--fs-sm); }
-.btn-icon { width: 32px; padding: 0; }
+.btn-lg { height: var(--space-8); padding: 0 var(--space-5); font-size: var(--fs-md); }
+.btn-sm { height: var(--space-6); padding: 0 var(--space-3); font-size: var(--fs-sm); }
+.btn-icon { width: var(--space-7); padding: 0; }
 .btn-block { display: flex; width: 100%; }
 
 .kbd {
@@ -397,7 +397,7 @@ code, kbd, pre, samp { font-family: var(--font-mono); }
   align-items: center;
   justify-content: center;
   font-family: var(--font-mono);
-  font-size: 10px;
+  font-size: var(--fs-2xs);
   padding: 2px 6px;
   background: var(--bg-surface-3);
   border: 1px solid var(--border-strong);
@@ -585,8 +585,8 @@ code, kbd, pre, samp { font-family: var(--font-mono); }
 }
 
 .radio-card .icon-tile {
-  width: 40px;
-  height: 40px;
+  width: var(--space-8);
+  height: var(--space-8);
   border-radius: var(--radius-md);
   background: var(--bg-surface-3);
   display: grid;
@@ -676,7 +676,7 @@ code, kbd, pre, samp { font-family: var(--font-mono); }
   background: currentColor;
 }
 
-.chip-mono { font-family: var(--font-mono); letter-spacing: var(--tracking-mono); font-size: 11px; }
+.chip-mono { font-family: var(--font-mono); letter-spacing: var(--tracking-mono); font-size: var(--fs-xs); }
 
 .chip-success   { color: var(--success);    background: var(--success-dim);   border-color: var(--success-border); }
 .chip-warning   { color: var(--warning);    background: var(--warning-dim);   border-color: var(--warning-border); }
@@ -701,7 +701,7 @@ code, kbd, pre, samp { font-family: var(--font-mono); }
   height: 20px;
   border-radius: var(--radius-xs);
   font-family: var(--font-mono);
-  font-size: 11px;
+  font-size: var(--fs-xs);
   letter-spacing: var(--tracking-mono);
   background: var(--bg-surface-3);
   color: var(--text-secondary);
@@ -781,7 +781,7 @@ code, kbd, pre, samp { font-family: var(--font-mono); }
   display: grid;
   place-items: center;
   font-family: var(--font-mono);
-  font-size: 10px;
+  font-size: var(--fs-2xs);
   font-weight: var(--fw-bold);
   letter-spacing: 0;
   flex-shrink: 0;
@@ -865,7 +865,7 @@ code, kbd, pre, samp { font-family: var(--font-mono); }
   border: 1px solid var(--border-input);
   border-radius: var(--radius-sm);
   padding: 0 var(--space-3);
-  height: 32px;
+  height: var(--space-7);
   width: 280px;
   color: var(--text-secondary);
   transition: border-color var(--dur-fast);
