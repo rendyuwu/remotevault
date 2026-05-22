@@ -66,6 +66,10 @@ code, kbd, pre, samp { font-family: var(--font-mono); }
   z-index: 1;
 }
 
+.icon-sprite {
+  display: none;
+}
+
 .sidebar {
   background: var(--bg-sidebar);
   border-right: 1px solid var(--border-subtle);

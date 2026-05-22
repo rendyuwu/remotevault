@@ -6,5 +6,5 @@ export function IconSprite() {
   onMount(() => {
     container.innerHTML = iconsSvg;
   });
-  return <div style="display:none" ref={container} />;
+  return <div class="icon-sprite" ref={container} />;
 }
