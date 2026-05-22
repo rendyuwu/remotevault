@@ -1,0 +1,5 @@
+pre-commit:
+  commands:
+    hygiene:
+      run: pnpm hygiene
+      skip_empty: false

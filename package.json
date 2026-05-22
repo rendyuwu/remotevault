@@ -1,0 +1,29 @@
+{
+  "name": "remotevault",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "tauri": "tauri",
+    "hygiene": "bash scripts/check-no-slop.sh && bash scripts/check-file-sizes.sh",
+    "prepare": "lefthook install"
+  },
+  "dependencies": {
+    "@solidjs/router": "^0.15.3",
+    "@tauri-apps/api": "^2.5.0",
+    "solid-js": "^1.9.5"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "^2.5.0",
+    "lefthook": "^2.1.8",
+    "typescript": "^5.8.3",
+    "vite": "^6.3.5",
+    "vite-plugin-solid": "^2.11.6"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": ["esbuild", "lefthook"]
+  }
+}
