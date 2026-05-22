@@ -124,19 +124,60 @@
   /* ─────────── Layout ─────────── */
   --sidebar-w: 232px;
   --topbar-h:  52px;
+  --settings-nav-w: 200px;
+  --modal-md: 460px;
+  --modal-wide: 560px;
+  --stage-wide: 720px;
+  --content-narrow: 920px;
   --content-max: 1200px;
+  --ambient-accent-size: 1200px 600px;
+  --ambient-info-size: 900px 500px;
 
   /* ─────────── Sizing (icons, elements) ─────────── */
+  --icon-2xs: 10px;
   --icon-xs:  14px;
   --icon-sm:  16px;
   --icon-md:  20px;
   --icon-lg:  24px;
   --icon-xl:  28px;
+  --icon-tile-sm: 18px;
   --dot-size: 6px;
   --toggle-w: 32px;
   --toggle-h: 18px;
+  --toggle-thumb: 12px;
   --element-sm: 36px;
   --element-md: 48px;
+  --surface-hover: rgba(255,255,255,0.02);
+  --hairline: 1px;
+  --stroke-thin: 2px;
+  --stroke-md: 3px;
+  --stroke-thick: 4px;
+  --focus-ring-offset: var(--stroke-thin);
+  --active-indicator-offset: calc(-1 * var(--space-3));
+  --active-offset: calc(-1 * var(--hairline));
+  --brand-glow-inset: calc(-1 * var(--stroke-thin));
+  --rise-distance: var(--space-2);
+  --glow-size: var(--space-2);
+  --toggle-thumb-offset: var(--stroke-thin);
+  --meter-bar-h: 3px;
+  --step-line-h: var(--stroke-thin);
+  --chip-pad-y: 3px;
+  --chip-pad-x: 10px;
+  --badge-pad-y: 1px;
+  --badge-pad-x: 6px;
+  --kbd-pad-y: 2px;
+  --kbd-pad-x: 6px;
+  --scrollbar-size: var(--icon-2xs);
+  --textarea-min-h: calc(var(--space-8) * 2);
+  --grid-cell: var(--space-8);
+  --chip-h: 22px;
+  --tag-pad-y: var(--hairline);
+  --tag-pad-x: var(--space-2);
+  --tag-h: 20px;
+  --search-w: 280px;
+  --dur-rise: 600ms;
+  --dur-pulse-fast: 1.2s;
+  --dur-pulse-slow: 1.6s;
 
   /* ─────────── Effects ─────────── */
   --blur-sm: 6px;
