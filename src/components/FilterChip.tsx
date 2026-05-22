@@ -7,6 +7,7 @@ interface FilterChipProps {
 export function FilterChip(props: FilterChipProps) {
   return (
     <button
+      type="button"
       class={`proto-chip${props.active ? " active" : ""}`}
       onClick={props.onClick}
     >
