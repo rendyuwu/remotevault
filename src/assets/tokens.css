@@ -34,26 +34,36 @@
   --accent-hover:  #d3ff66;
   --accent-dim:    rgba(196, 247, 78, 0.14);
   --accent-faint:  rgba(196, 247, 78, 0.06);
+  --accent-subtle: rgba(196, 247, 78, 0.04);
+  --accent-border: rgba(196, 247, 78, 0.25);
 
   /* ─────────── Semantic state colors ─────────── */
-  --success:       #7eecb6;     /* synced, healthy */
-  --success-dim:   rgba(126, 236, 182, 0.12);
-  --warning:       #ffb547;     /* pending, attention */
-  --warning-dim:   rgba(255, 181, 71, 0.12);
-  --danger:        #ff6b6b;     /* failed, conflict, destructive */
-  --danger-dim:    rgba(255, 107, 107, 0.12);
-  --info:          #7cb8ff;
-  --info-dim:      rgba(124, 184, 255, 0.12);
+  --success:        #7eecb6;     /* synced, healthy */
+  --success-dim:    rgba(126, 236, 182, 0.12);
+  --success-border: rgba(126, 236, 182, 0.25);
+  --warning:        #ffb547;     /* pending, attention */
+  --warning-dim:    rgba(255, 181, 71, 0.12);
+  --warning-border: rgba(255, 181, 71, 0.25);
+  --danger:         #ff6b6b;     /* failed, conflict, destructive */
+  --danger-dim:     rgba(255, 107, 107, 0.12);
+  --danger-border:  rgba(255, 107, 107, 0.25);
+  --danger-hover:   rgba(255, 107, 107, 0.18);
+  --info:           #7cb8ff;
+  --info-dim:       rgba(124, 184, 255, 0.12);
+  --info-subtle:    rgba(124, 184, 255, 0.025);
+  --info-border:    rgba(124, 184, 255, 0.25);
 
   /* ─────────── Domain-specific tokens (per PRD §15) ─────────── */
-  --encrypted:     #a78bfa;     /* "encrypted" badge */
-  --encrypted-dim: rgba(167, 139, 250, 0.12);
+  --encrypted:        #a78bfa;     /* "encrypted" badge */
+  --encrypted-dim:    rgba(167, 139, 250, 0.12);
+  --encrypted-border: rgba(167, 139, 250, 0.25);
   --synced:        var(--success);
   --conflicted:    var(--danger);
   --offline:       var(--text-muted);
   --pending:       var(--warning);
   --locked:        #d4a373;     /* vault locked state */
   --locked-dim:    rgba(212, 163, 115, 0.14);
+  --locked-border: rgba(212, 163, 115, 0.25);
 
   /* ─────────── Typography ─────────── */
   --font-sans: 'Satoshi', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
@@ -114,6 +124,23 @@
   --sidebar-w: 232px;
   --topbar-h:  52px;
   --content-max: 1200px;
+
+  /* ─────────── Sizing (icons, elements) ─────────── */
+  --icon-xs:  14px;
+  --icon-sm:  16px;
+  --icon-md:  20px;
+  --icon-lg:  24px;
+  --icon-xl:  28px;
+  --dot-size: 6px;
+  --toggle-w: 32px;
+  --toggle-h: 18px;
+  --element-sm: 36px;
+  --element-md: 48px;
+
+  /* ─────────── Effects ─────────── */
+  --blur-sm: 6px;
+  --blur-md: 8px;
+  --surface-tint: rgba(255,255,255,0.015);
 
   /* ─────────── Motion ─────────── */
   --ease-out:    cubic-bezier(0.22, 1, 0.36, 1);

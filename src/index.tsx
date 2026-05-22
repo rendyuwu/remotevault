@@ -1,3 +1,4 @@
+import "./assets/fonts.css";
 import "./assets/tokens.css";
 import "./assets/styles.css";
 import { render } from "solid-js/web";
