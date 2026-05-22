@@ -1,0 +1,40 @@
+# Local dev / spec tooling — never commit
+SPEC.md
+FORMAT.md
+PRD.md
+mockup/
+.claude/
+.playwright-cli/
+
+# Tauri build artifacts
+src-tauri/target/
+dist/
+
+# Node
+node_modules/
+.pnpm-store/
+
+# OS
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+
+# IDE
+.idea/
+.vscode/
+*.code-workspace
+
+# Env
+.env
+.env.*
+!.env.example
+
+# Test artifacts
+test-results/
+playwright-report/
+blob-report/
+coverage/
+
+# Build
+*.tsbuildinfo
