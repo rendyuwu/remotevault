@@ -1,10 +1,19 @@
-import { Route } from "@solidjs/router";
+import { Route, Navigate } from "@solidjs/router";
 
 const Stub = (props: { name: string }) => <div>{props.name}</div>;
 
+function RootRedirect() {
+  const hasLaunched = localStorage.getItem("rv:launched");
+  if (!hasLaunched) {
+    return <Navigate href="/welcome" />;
+  }
+  return <Navigate href="/connections" />;
+}
+
 export const routes = (
   <>
-    <Route path="/" component={() => <Stub name="welcome" />} />
+    <Route path="/" component={RootRedirect} />
+    <Route path="/welcome" component={() => <Stub name="welcome" />} />
     <Route path="/provider-setup" component={() => <Stub name="provider-setup" />} />
     <Route path="/vault-create" component={() => <Stub name="vault-create" />} />
     <Route path="/vault-locked" component={() => <Stub name="vault-locked" />} />

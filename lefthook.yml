@@ -1,0 +1,4 @@
+pre-commit:
+  commands:
+    hygiene:
+      run: pnpm hygiene
