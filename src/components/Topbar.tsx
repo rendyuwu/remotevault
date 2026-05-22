@@ -1,4 +1,5 @@
-import { onMount, onCleanup, type JSX } from "solid-js";
+import { createEffect, onCleanup, type JSX } from "solid-js";
+import { A } from "@solidjs/router";
 import { useTopbar } from "./TopbarContext";
 
 interface TitleProps {
@@ -8,7 +9,7 @@ interface TitleProps {
 
 export function TopbarTitle(props: TitleProps) {
   const { setTopbar } = useTopbar();
-  onMount(() => {
+  createEffect(() => {
     setTopbar(
       <>
         <span class="topbar-title">{props.title}</span>
@@ -28,11 +29,11 @@ interface BreadcrumbProps {
 
 export function TopbarBreadcrumb(props: BreadcrumbProps) {
   const { setTopbar } = useTopbar();
-  onMount(() => {
+  createEffect(() => {
     setTopbar(
       <>
         <div class="topbar-crumbs">
-          <a href={props.parent.href}>{props.parent.label}</a>
+          <A href={props.parent.href}>{props.parent.label}</A>
           <span class="sep">/</span>
           <span class="here">{props.current}</span>
         </div>

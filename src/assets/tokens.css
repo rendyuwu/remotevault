@@ -127,16 +127,23 @@
   --content-max: 1200px;
 
   /* ─────────── Sizing (icons, elements) ─────────── */
+  --icon-2xs: 10px;
   --icon-xs:  14px;
   --icon-sm:  16px;
   --icon-md:  20px;
   --icon-lg:  24px;
   --icon-xl:  28px;
+  --icon-tile-sm: 18px;
   --dot-size: 6px;
   --toggle-w: 32px;
   --toggle-h: 18px;
+  --toggle-thumb: 12px;
   --element-sm: 36px;
   --element-md: 48px;
+  --surface-hover: rgba(255,255,255,0.02);
+  --dur-rise: 600ms;
+  --dur-pulse-fast: 1.2s;
+  --dur-pulse-slow: 1.6s;
 
   /* ─────────── Effects ─────────── */
   --blur-sm: 6px;

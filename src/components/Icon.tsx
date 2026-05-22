@@ -1,18 +1,18 @@
 import type { JSX } from "solid-js";
 
+type IconSize = "2xs" | "xs" | "sm";
+
 interface IconProps {
   name: string;
-  size?: number;
+  size?: IconSize;
   class?: string;
 }
 
 export function Icon(props: IconProps): JSX.Element {
+  const cls = () => ["icon", props.size && `icon-${props.size}`, props.class].filter(Boolean).join(" ");
+
   return (
-    <svg
-      class={props.class ? `icon ${props.class}` : "icon"}
-      width={props.size ?? 16}
-      height={props.size ?? 16}
-    >
+    <svg class={cls()}>
       <use href={`#${props.name}`} />
     </svg>
   );

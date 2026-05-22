@@ -3,21 +3,21 @@ import { useLocation, A } from "@solidjs/router";
 import { Icon } from "./Icon";
 
 const NAV_ITEMS = [
-  { label: "Connections", icon: "i-server", href: "/connections" },
-  { label: "Vault", icon: "i-vault", href: "/vault" },
-  { label: "Sessions", icon: "i-terminal", href: "/session" },
-  { label: "Sync", icon: "i-sync", href: "/sync" },
-  { label: "Devices", icon: "i-devices", href: "/devices" },
+  { label: "Connections", icon: "i-server", href: "/connections", activePaths: ["/connections", "/connection-edit"] },
+  { label: "Vault", icon: "i-vault", href: "/vault", activePaths: ["/vault", "/vault-edit"] },
+  { label: "Sessions", icon: "i-terminal", href: "/session", activePaths: ["/session"] },
+  { label: "Sync", icon: "i-sync", href: "/sync", activePaths: ["/sync"] },
+  { label: "Devices", icon: "i-devices", href: "/devices", activePaths: ["/devices"] },
 ] as const;
 
 const BOTTOM_ITEMS = [
-  { label: "Settings", icon: "i-settings", href: "/settings" },
-  { label: "Security", icon: "i-shield", href: "/security" },
+  { label: "Settings", icon: "i-settings", href: "/settings", activePaths: ["/settings"] },
+  { label: "Security", icon: "i-shield", href: "/security", activePaths: ["/security"] },
 ] as const;
 
 export function Sidebar() {
   const location = useLocation();
-  const isActive = (href: string) => location.pathname === href || location.pathname.startsWith(href + "-");
+  const isActive = (paths: readonly string[]) => paths.some((path) => location.pathname === path);
 
   return (
     <aside class="sidebar">
@@ -29,7 +29,7 @@ export function Sidebar() {
       <nav class="sidebar-nav">
         <For each={NAV_ITEMS}>
           {(item) => (
-            <A href={item.href} class={`nav-item${isActive(item.href) ? " active" : ""}`}>
+            <A href={item.href} class={`nav-item${isActive(item.activePaths) ? " active" : ""}`}>
               <Icon name={item.icon} />
               {item.label}
             </A>
@@ -40,7 +40,7 @@ export function Sidebar() {
 
         <For each={BOTTOM_ITEMS}>
           {(item) => (
-            <A href={item.href} class={`nav-item${isActive(item.href) ? " active" : ""}`}>
+            <A href={item.href} class={`nav-item${isActive(item.activePaths) ? " active" : ""}`}>
               <Icon name={item.icon} />
               {item.label}
             </A>
@@ -51,11 +51,11 @@ export function Sidebar() {
       <div class="sidebar-footer">
         <div class="workspace-card">
           <div class="ws-name">
-            <Icon name="i-vault" size={12} />
+            <Icon name="i-vault" size="xs" />
             Personal Workspace
           </div>
           <div class="ws-status">
-            <span style="width:6px;height:6px;border-radius:50%;background:var(--success);display:inline-block" />
+            <span class="status-dot status-dot-success" />
             vault unlocked
           </div>
         </div>

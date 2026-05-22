@@ -7,6 +7,7 @@ type BtnSize = "sm" | "md" | "lg";
 interface BtnProps {
   variant?: BtnVariant;
   size?: BtnSize;
+  type?: "button" | "submit" | "reset";
   icon?: string;
   iconOnly?: boolean;
   block?: boolean;
@@ -26,8 +27,8 @@ export function Btn(props: BtnProps) {
   };
 
   return (
-    <button class={cls()} disabled={props.disabled} onClick={props.onClick}>
-      {props.icon && <Icon name={props.icon} size={props.size === "sm" ? 13 : 16} />}
+    <button type={props.type ?? "button"} class={cls()} disabled={props.disabled} onClick={props.onClick}>
+      {props.icon && <Icon name={props.icon} size={props.size === "sm" ? "xs" : "sm"} />}
       {props.children}
     </button>
   );

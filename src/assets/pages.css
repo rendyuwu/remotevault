@@ -282,7 +282,7 @@
   gap: var(--space-2);
 }
 
-.vault-picker-header h4 svg { width: 14px; height: 14px; color: var(--encrypted); }
+.vault-picker-header h4 svg { color: var(--encrypted); }
 
 .vault-picker-list {
   display: flex;
@@ -298,6 +298,8 @@
   border-radius: var(--radius-sm);
   border: 1px solid var(--border-subtle);
   background: var(--bg-input);
+  color: inherit;
+  text-align: left;
   cursor: pointer;
   transition: border-color var(--dur-fast), background var(--dur-fast);
 }
@@ -306,8 +308,8 @@
 .vault-picker-item.selected { border-color: var(--accent); background: var(--accent-faint); }
 
 .vault-picker-item .vp-icon {
-  width: 24px;
-  height: 24px;
+  width: var(--icon-lg);
+  height: var(--icon-lg);
   border-radius: var(--radius-xs);
   display: grid;
   place-items: center;
@@ -321,9 +323,9 @@
 
 .vault-picker-item .vp-check {
   margin-left: auto;
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
+  width: var(--icon-sm);
+  height: var(--icon-sm);
+  border-radius: var(--radius-pill);
   background: var(--accent);
   color: var(--text-inverse);
   display: none;
@@ -386,6 +388,12 @@
   flex-shrink: 0;
 }
 
+.session-tab-wrap {
+  display: flex;
+  align-items: stretch;
+  position: relative;
+}
+
 .session-tab {
   display: flex;
   align-items: center;
@@ -394,29 +402,30 @@
   font-size: var(--fs-sm);
   font-weight: var(--fw-medium);
   color: var(--text-secondary);
+  border: 0;
   border-bottom: 2px solid transparent;
+  background: transparent;
   cursor: pointer;
   white-space: nowrap;
   transition: color var(--dur-fast), background var(--dur-fast);
-  position: relative;
 }
 
-.session-tab:hover { color: var(--text-primary); background: rgba(255,255,255,0.02); }
+.session-tab-wrap:hover .session-tab { color: var(--text-primary); background: var(--surface-hover); }
 
 .session-tab.active {
   color: var(--text-primary);
   border-bottom-color: var(--accent);
-  background: rgba(255,255,255,0.02);
+  background: var(--surface-hover);
 }
 
 .session-tab .tab-proto {
-  width: 18px;
-  height: 18px;
-  border-radius: 3px;
+  width: var(--icon-tile-sm);
+  height: var(--icon-tile-sm);
+  border-radius: var(--radius-xs);
   display: grid;
   place-items: center;
   font-family: var(--font-mono);
-  font-size: 8px;
+  font-size: var(--fs-2xs);
   font-weight: var(--fw-bold);
   flex-shrink: 0;
 }
@@ -425,34 +434,33 @@
 .session-tab .tab-proto.rdp { background: var(--info-dim); color: var(--info); }
 
 .session-tab .tab-state {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
+  width: var(--dot-size);
+  height: var(--dot-size);
+  border-radius: var(--radius-pill);
   flex-shrink: 0;
 }
 
 .session-tab .tab-state.connected { background: var(--success); box-shadow: 0 0 6px var(--success); }
-.session-tab .tab-state.connecting { background: var(--warning); animation: pulse-dot 1.2s infinite; }
+.session-tab .tab-state.connecting { background: var(--warning); animation: pulse-dot var(--dur-pulse-fast) infinite; }
 .session-tab .tab-state.failed { background: var(--danger); }
 .session-tab .tab-state.disconnected { background: var(--text-faint); }
 
-.session-tab .tab-close {
-  width: 16px;
-  height: 16px;
-  border-radius: 3px;
+.tab-close {
+  width: var(--icon-sm);
+  height: var(--icon-sm);
+  border: 0;
+  border-radius: var(--radius-xs);
   display: grid;
   place-items: center;
+  align-self: center;
   opacity: 0;
+  background: transparent;
+  color: var(--text-secondary);
   transition: opacity var(--dur-fast), background var(--dur-fast);
-  margin-left: var(--space-1);
+  margin-left: calc(-1 * var(--space-3));
+  margin-right: var(--space-2);
   cursor: pointer;
 }
 
-.session-tab:hover .tab-close { opacity: 0.6; }
-.session-tab .tab-close:hover { opacity: 1; background: var(--bg-surface-3); }
-.session-tab .tab-close svg { width: 10px; height: 10px; }
-
-@keyframes pulse-dot {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.4; }
-}
+.session-tab-wrap:hover .tab-close { opacity: 0.6; }
+.tab-close:hover { opacity: 1; background: var(--bg-surface-3); }

@@ -6,11 +6,26 @@ import { TopbarProvider, useTopbar } from "./components/TopbarContext";
 
 const ONBOARDING_ROUTES = ["/welcome", "/provider-setup", "/vault-create", "/vault-locked"];
 
+const TITLES: Record<string, string> = {
+  "/connections": "Connections",
+  "/connection-edit": "Connections / Edit connection",
+  "/vault": "Vault",
+  "/vault-edit": "Vault / Edit secret",
+  "/session": "Sessions",
+  "/sync": "Sync",
+  "/devices": "Devices",
+  "/security": "Security",
+  "/settings": "Settings",
+};
+
 function ShellContent(props: ParentProps) {
+  const location = useLocation();
   const { topbar } = useTopbar();
+  const fallbackTitle = () => TITLES[location.pathname] ?? "RemoteVault";
+
   return (
     <main class="main">
-      <header class="topbar">{topbar()}</header>
+      <header class="topbar">{topbar() ?? <span class="topbar-title">{fallbackTitle()}</span>}</header>
       <div class="content">{props.children}</div>
     </main>
   );

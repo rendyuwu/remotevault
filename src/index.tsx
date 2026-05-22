@@ -3,6 +3,7 @@ import "./assets/tokens.css";
 import "./assets/base.css";
 import "./assets/components.css";
 import "./assets/pages.css";
+import "./assets/utilities.css";
 import { render } from "solid-js/web";
 import { HashRouter } from "@solidjs/router";
 import { App } from "./App";
