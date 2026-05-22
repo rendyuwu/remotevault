@@ -4,17 +4,21 @@ import { Icon } from "./Icon";
 type BtnVariant = "primary" | "secondary" | "ghost" | "danger";
 type BtnSize = "sm" | "md" | "lg";
 
-interface BtnProps {
+interface BtnBaseProps {
   variant?: BtnVariant;
   size?: BtnSize;
   type?: "button" | "submit" | "reset";
   icon?: string;
-  iconOnly?: boolean;
   block?: boolean;
   disabled?: boolean;
   onClick?: (e: MouseEvent) => void;
   children?: JSX.Element;
 }
+
+type BtnProps = BtnBaseProps & (
+  | { iconOnly: true; ariaLabel: string }
+  | { iconOnly?: false; ariaLabel?: string }
+);
 
 export function Btn(props: BtnProps) {
   const cls = () => {
@@ -27,7 +31,13 @@ export function Btn(props: BtnProps) {
   };
 
   return (
-    <button type={props.type ?? "button"} class={cls()} disabled={props.disabled} onClick={props.onClick}>
+    <button
+      type={props.type ?? "button"}
+      class={cls()}
+      disabled={props.disabled}
+      aria-label={props.ariaLabel}
+      onClick={props.onClick}
+    >
       {props.icon && <Icon name={props.icon} size={props.size === "sm" ? "xs" : "sm"} />}
       {props.children}
     </button>

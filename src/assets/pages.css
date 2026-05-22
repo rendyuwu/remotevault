@@ -252,6 +252,7 @@
 }
 
 .proto-chip:hover { border-color: var(--border-strong); color: var(--text-primary); }
+.proto-chip:focus-visible { outline: var(--stroke-thin) solid var(--accent); outline-offset: var(--stroke-thin); }
 .proto-chip.active { border-color: var(--accent); color: var(--accent); background: var(--accent-faint); }
 
 /* ═══════════════════════════════════════════════════════════
@@ -463,4 +464,9 @@
 }
 
 .session-tab-wrap:hover .tab-close { opacity: 0.6; }
-.tab-close:hover { opacity: 1; background: var(--bg-surface-3); }
+.tab-close:hover,
+.tab-close:focus-visible {
+  opacity: 1;
+  background: var(--bg-surface-3);
+}
+.tab-close:focus-visible { outline: var(--stroke-thin) solid var(--accent); outline-offset: var(--stroke-thin); }

@@ -12,7 +12,7 @@ export function Icon(props: IconProps): JSX.Element {
   const cls = () => ["icon", props.size && `icon-${props.size}`, props.class].filter(Boolean).join(" ");
 
   return (
-    <svg class={cls()}>
+    <svg class={cls()} aria-hidden="true">
       <use href={`#${props.name}`} />
     </svg>
   );

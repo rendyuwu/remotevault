@@ -44,20 +44,20 @@
 .text-lg { font-size: var(--fs-lg); }
 
 .divider {
-  height: 1px;
+  height: var(--hairline);
   background: var(--border-subtle);
   margin: var(--space-5) 0;
 }
 
 .divider-vert {
-  width: 1px;
+  width: var(--hairline);
   align-self: stretch;
   background: var(--border-subtle);
 }
 
 /* Stagger reveal on page load */
 @keyframes rise {
-  from { opacity: 0; transform: translateY(8px); }
+  from { opacity: 0; transform: translateY(var(--rise-distance)); }
   to   { opacity: 1; transform: translateY(0); }
 }
 
@@ -85,10 +85,10 @@
   position: absolute;
   inset: 0;
   background-image:
-    linear-gradient(var(--border-subtle) 1px, transparent 1px),
-    linear-gradient(90deg, var(--border-subtle) 1px, transparent 1px);
-  background-size: 40px 40px;
-  background-position: -1px -1px;
+    linear-gradient(var(--border-subtle) var(--hairline), transparent var(--hairline)),
+    linear-gradient(90deg, var(--border-subtle) var(--hairline), transparent var(--hairline));
+  background-size: var(--grid-cell) var(--grid-cell);
+  background-position: var(--active-offset) var(--active-offset);
   mask-image: radial-gradient(ellipse 70% 60% at 50% 30%, black 30%, transparent 80%);
   -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 30%, black 30%, transparent 80%);
   pointer-events: none;
@@ -106,12 +106,12 @@
 
 .stage {
   width: 100%;
-  max-width: 560px;
+  max-width: var(--modal-wide);
   position: relative;
   z-index: 1;
 }
 
-.stage-wide { max-width: 720px; }
+.stage-wide { max-width: var(--stage-wide); }
 
 /* Step indicator */
 .steps {
@@ -127,13 +127,13 @@
 
 .steps .dot {
   width: var(--space-6);
-  height: 2px;
+  height: var(--step-line-h);
   background: var(--border-strong);
   border-radius: var(--radius-pill);
 }
 
 .steps .dot.done { background: var(--accent); }
-.steps .dot.current { background: var(--accent); box-shadow: 0 0 8px var(--accent); }
+.steps .dot.current { background: var(--accent); box-shadow: 0 0 var(--glow-size) var(--accent); }
 
 /* Misc */
 .hr-label {
@@ -150,6 +150,6 @@
 .hr-label::before, .hr-label::after {
   content: '';
   flex: 1;
-  height: 1px;
+  height: var(--hairline);
   background: var(--border-subtle);
 }

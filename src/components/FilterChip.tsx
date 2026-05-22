@@ -9,6 +9,7 @@ export function FilterChip(props: FilterChipProps) {
     <button
       type="button"
       class={`proto-chip${props.active ? " active" : ""}`}
+      aria-pressed={props.active}
       onClick={props.onClick}
     >
       {props.label}

@@ -10,6 +10,6 @@ import { App } from "./App";
 import { routes } from "./routes";
 
 render(
-  () => <HashRouter root={App}>{routes}</HashRouter>,
+  () => <HashRouter root={App}>{routes()}</HashRouter>,
   document.getElementById("root")!,
 );
