@@ -12,13 +12,15 @@ interface PillProps {
   name: string;
   subtitle: string;
   status?: "synced" | "conflict" | "pending" | "local";
+  active?: boolean;
   onClick?: () => void;
   onDblClick?: () => void;
+  onEdit?: () => void;
 }
 
 export function Pill(props: PillProps): JSX.Element {
   return (
-    <button type="button" class="pill" onClick={props.onClick} onDblClick={props.onDblClick}>
+    <button type="button" class={`pill${props.active ? " active" : ""}`} onClick={props.onClick} onDblClick={props.onDblClick}>
       <span class={`pill-icon ${props.icon.type}`}>
         {props.icon.svg ? <Icon name={props.icon.svg} size="xs" /> : (props.icon.label ?? props.icon.type.toUpperCase())}
       </span>
@@ -27,6 +29,11 @@ export function Pill(props: PillProps): JSX.Element {
         <span class="pill-sub">{props.subtitle}</span>
       </div>
       {props.status && <span class={`pill-status ${props.status}`} />}
+      {props.onEdit && (
+        <button type="button" class="pill-edit" title="Edit" onClick={(e) => { e.stopPropagation(); props.onEdit!(); }}>
+          <Icon name="i-edit" size="xs" />
+        </button>
+      )}
     </button>
   );
 }

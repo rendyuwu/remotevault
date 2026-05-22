@@ -590,6 +590,33 @@
   color: var(--text-faint);
 }
 
+.pill.active {
+  border-color: var(--accent);
+  background: var(--accent-faint);
+}
+
+.pill-edit {
+  position: absolute;
+  right: var(--pill-pad-x);
+  top: 50%;
+  transform: translateY(-50%);
+  width: var(--icon-sm);
+  height: var(--icon-sm);
+  border: 0;
+  border-radius: var(--radius-xs);
+  display: grid;
+  place-items: center;
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity var(--dur-fast), background var(--dur-fast);
+}
+
+.pill:hover .pill-edit,
+.pill.active .pill-edit { opacity: 0.7; }
+.pill-edit:hover { opacity: 1; background: var(--bg-surface-3); }
+
 /* ═══════════════════════════════════════════════════════════
    Modal
    ═══════════════════════════════════════════════════════════ */
