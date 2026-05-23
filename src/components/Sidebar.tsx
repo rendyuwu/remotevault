@@ -4,7 +4,7 @@ import { Icon } from "./Icon";
 
 const NAV_ITEMS = [
   { label: "Connections", icon: "i-server", href: "/connections", activePaths: ["/connections", "/connection-edit"] },
-  { label: "Vault", icon: "i-vault", href: "/vault", activePaths: ["/vault", "/vault-edit"] },
+  { label: "Vault", icon: "i-vault", href: "/vault", activePaths: ["/vault", "/vault-edit", "/vault-locked"] },
   { label: "Sessions", icon: "i-terminal", href: "/session", activePaths: ["/session"] },
   { label: "Sync", icon: "i-sync", href: "/sync", activePaths: ["/sync"] },
   { label: "Devices", icon: "i-devices", href: "/devices", activePaths: ["/devices"] },
@@ -18,6 +18,7 @@ const BOTTOM_ITEMS = [
 export function Sidebar() {
   const location = useLocation();
   const isActive = (paths: readonly string[]) => paths.some((path) => location.pathname === path);
+  const isLocked = () => location.pathname === "/vault-locked";
 
   return (
     <aside class="sidebar">
@@ -32,6 +33,7 @@ export function Sidebar() {
             <A href={item.href} class={`nav-item${isActive(item.activePaths) ? " active" : ""}`}>
               <Icon name={item.icon} />
               {item.label}
+              {item.label === "Vault" && isLocked() && <span class="chip chip-locked nav-lock-chip">Locked</span>}
             </A>
           )}
         </For>
@@ -55,8 +57,8 @@ export function Sidebar() {
             Personal Workspace
           </div>
           <div class="ws-status">
-            <span class="status-dot status-dot-success" />
-            vault unlocked
+            <span class={`status-dot ${isLocked() ? "status-dot-locked" : "status-dot-success"}`} />
+            {isLocked() ? "vault locked" : "vault unlocked"}
           </div>
         </div>
       </div>

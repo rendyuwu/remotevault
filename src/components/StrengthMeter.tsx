@@ -2,6 +2,7 @@ type Strength = "weak" | "fair" | "good" | "strong";
 
 interface StrengthMeterProps {
   strength: Strength;
+  hint?: string;
 }
 
 const LABELS: Record<Strength, string> = {
@@ -22,6 +23,7 @@ export function StrengthMeter(props: StrengthMeterProps) {
       </div>
       <div class="strength-label">
         <span class={`level ${props.strength}`}>{LABELS[props.strength]}</span>
+        {props.hint && <span class="text-muted">{props.hint}</span>}
       </div>
     </>
   );

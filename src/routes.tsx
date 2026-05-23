@@ -1,4 +1,8 @@
 import { Route, Navigate } from "@solidjs/router";
+import { ProviderSetupPage } from "./pages/ProviderSetupPage";
+import { VaultCreatePage } from "./pages/VaultCreatePage";
+import { VaultLockedPage } from "./pages/VaultLockedPage";
+import { WelcomePage } from "./pages/WelcomePage";
 
 const Stub = (props: { name: string }) => <div>{props.name}</div>;
 
@@ -14,10 +18,10 @@ export function routes() {
   return (
     <>
       <Route path="/" component={RootRedirect} />
-      <Route path="/welcome" component={() => <Stub name="welcome" />} />
-      <Route path="/provider-setup" component={() => <Stub name="provider-setup" />} />
-      <Route path="/vault-create" component={() => <Stub name="vault-create" />} />
-      <Route path="/vault-locked" component={() => <Stub name="vault-locked" />} />
+      <Route path="/welcome" component={WelcomePage} />
+      <Route path="/provider-setup" component={ProviderSetupPage} />
+      <Route path="/vault-create" component={VaultCreatePage} />
+      <Route path="/vault-locked" component={VaultLockedPage} />
       <Route path="/vault" component={() => <Stub name="vault" />} />
       <Route path="/vault-edit" component={() => <Stub name="vault-edit" />} />
       <Route path="/connections" component={() => <Stub name="connections" />} />

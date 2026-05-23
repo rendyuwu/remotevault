@@ -19,7 +19,7 @@ describe("routes", () => {
   it("redirects root to welcome before launch", async () => {
     const history = renderRoutesAt("/");
 
-    await waitFor(() => expect(screen.getByText("welcome")).not.toBeNull());
+    await waitFor(() => expect(screen.getByText("Your servers, your secrets,")).not.toBeNull());
     expect(history.get()).toBe("/welcome");
   });
 
@@ -29,5 +29,16 @@ describe("routes", () => {
 
     await waitFor(() => expect(screen.getByText("connections")).not.toBeNull());
     expect(history.get()).toBe("/connections");
+  });
+
+  it("renders implemented task routes", () => {
+    renderRoutesAt("/provider-setup");
+    expect(screen.getByText("Step 2 of 3 — Choose storage")).not.toBeNull();
+
+    renderRoutesAt("/vault-create");
+    expect(screen.getByText("Create your Vault passphrase")).not.toBeNull();
+
+    renderRoutesAt("/vault-locked");
+    expect(screen.getByText("Vault is locked")).not.toBeNull();
   });
 });
