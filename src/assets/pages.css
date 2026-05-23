@@ -566,9 +566,9 @@
 }
 .provider-card.selected .provider-radio { background: var(--accent); border-color: var(--accent); box-shadow: inset 0 0 0 var(--stroke-md) var(--bg-app); }
 
-.config-section { margin-bottom: var(--space-5); }
+.config-section { padding: var(--space-6); margin-bottom: var(--space-5); border: var(--hairline) solid var(--border-subtle); border-radius: var(--radius-lg); background: var(--bg-surface); }
 .config-section h3 { display: flex; align-items: center; gap: var(--space-3); margin: 0 0 var(--space-5); font-size: var(--fs-md); }
-.crypto-details { padding: var(--space-6); margin-bottom: var(--space-5); border: var(--hairline) solid var(--border-subtle); border-radius: var(--radius-lg); background: var(--bg-surface); }
+.crypto-details { margin-top: var(--space-6); padding: var(--space-4) var(--space-5); border: var(--hairline) solid var(--border-subtle); border-radius: var(--radius-lg); background: var(--bg-surface); }
 .step-num { display: grid; place-items: center; width: var(--chip-h); height: var(--chip-h); border-radius: var(--radius-pill); background: var(--accent-dim); color: var(--accent); font: var(--fw-bold) var(--fs-xs)/var(--lh-base) var(--font-mono); }
 .form-grid { display: flex; flex-direction: column; gap: var(--space-5); }
 .preset-row { display: flex; flex-wrap: wrap; gap: var(--space-2); }
@@ -599,7 +599,6 @@
 .warning-box h4 { margin: 0 0 var(--space-1); font-size: var(--fs-sm); }
 .warning-box p { margin: 0; color: var(--text-secondary); font-size: var(--fs-sm); line-height: var(--lh-snug); }
 .footer-actions { display: flex; align-items: center; justify-content: space-between; margin-top: var(--space-7); padding-top: var(--space-6); border-top: var(--hairline) solid var(--border-subtle); }
-.crypto-details { margin-top: var(--space-6); padding: var(--space-4) var(--space-5); }
 .crypto-details summary { color: var(--text-secondary); cursor: pointer; font-size: var(--fs-sm); font-weight: var(--fw-medium); list-style: none; }
 .crypto-details summary::-webkit-details-marker { display: none; }
 .crypto-details .detail-grid { display: grid; grid-template-columns: auto 1fr; gap: var(--space-2) var(--space-4); margin-top: var(--space-4); font: var(--fs-sm)/var(--lh-base) var(--font-mono); letter-spacing: var(--tracking-mono); }

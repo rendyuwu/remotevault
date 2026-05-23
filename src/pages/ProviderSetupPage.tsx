@@ -80,7 +80,7 @@ export function ProviderSetupPage() {
       </div>
 
       <Show when={provider() === "local"}>
-        <section class="card config-section rise rise-3" id="config-local">
+        <section class="config-section rise rise-3" id="config-local">
           <h3>
             <span class="step-num">1</span>
             Configure Local Folder
@@ -135,7 +135,7 @@ export function ProviderSetupPage() {
       </Show>
 
       <Show when={provider() === "s3"}>
-        <section class="card config-section rise rise-3" id="config-s3">
+        <section class="config-section rise rise-3" id="config-s3">
           <h3>
             <span class="step-num">1</span>
             Configure S3-Compatible Storage
