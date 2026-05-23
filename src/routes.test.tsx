@@ -48,12 +48,4 @@ describe("routes", () => {
 
     expect(screen.getByText("Vault is locked")).not.toBeNull();
   });
-
-  it("redirects old vault edit route to vault", async () => {
-    localStorage.setItem("rv:launched", "1");
-    const history = renderRoutesAt("/vault-edit");
-
-    await waitFor(() => expect(screen.getByText("Vault unlocked")).not.toBeNull());
-    expect(history.get()).toBe("/vault");
-  });
 });

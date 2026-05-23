@@ -24,7 +24,6 @@ export function routes() {
       <Route path="/vault-create" component={VaultCreatePage} />
       <Route path="/vault-locked" component={VaultLockedPage} />
       <Route path="/vault" component={VaultPage} />
-      <Route path="/vault-edit" component={() => <Navigate href="/vault" />} />
       <Route path="/connections" component={() => <Stub name="connections" />} />
       <Route path="/connection-edit" component={() => <Stub name="connection-edit" />} />
       <Route path="/session" component={() => <Stub name="session" />} />
