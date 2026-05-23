@@ -207,11 +207,59 @@
   color-scheme: dark;
 }
 
-/* Light theme stub — wired but not styled per user choice (dark only first).
-   Tauri build will replace these with real Light tokens.
 [data-theme="light"] {
-  --bg-app: #f7f8fa;
-  --text-primary: #0a0c10;
-  ...
+  --bg-app:        #f6f7f2;
+  --bg-sidebar:    #eef1e8;
+  --bg-surface:    #ffffff;
+  --bg-surface-2:  #f0f3ea;
+  --bg-surface-3:  #e5eadc;
+  --bg-input:      #fbfcf8;
+  --bg-overlay:    rgba(22, 28, 18, 0.38);
+
+  --border-subtle: #dfe5d6;
+  --border-strong: #c8d2bd;
+  --border-input:  #d3dcc9;
+
+  --text-primary:   #10150c;
+  --text-secondary: #46513d;
+  --text-muted:     #737d6a;
+  --text-faint:     #9aa48f;
+  --text-inverse:   #0a0c10;
+
+  --accent:        #7ca800;
+  --accent-hover:  #6f9700;
+  --accent-dim:    rgba(124, 168, 0, 0.14);
+  --accent-faint:  rgba(124, 168, 0, 0.08);
+  --accent-subtle: rgba(124, 168, 0, 0.05);
+  --accent-border: rgba(124, 168, 0, 0.28);
+
+  --success:        #177a4b;
+  --success-dim:    rgba(23, 122, 75, 0.10);
+  --success-border: rgba(23, 122, 75, 0.22);
+  --warning:        #a86a00;
+  --warning-dim:    rgba(168, 106, 0, 0.11);
+  --warning-border: rgba(168, 106, 0, 0.24);
+  --danger:         #b83232;
+  --danger-dim:     rgba(184, 50, 50, 0.10);
+  --danger-border:  rgba(184, 50, 50, 0.24);
+  --danger-hover:   rgba(184, 50, 50, 0.16);
+  --info:           #2368b5;
+  --info-dim:       rgba(35, 104, 181, 0.10);
+  --info-subtle:    rgba(35, 104, 181, 0.025);
+  --info-border:    rgba(35, 104, 181, 0.24);
+
+  --encrypted:        #6b4bb8;
+  --encrypted-dim:    rgba(107, 75, 184, 0.10);
+  --encrypted-border: rgba(107, 75, 184, 0.24);
+  --locked:        #8c5a20;
+  --locked-dim:    rgba(140, 90, 32, 0.12);
+  --locked-border: rgba(140, 90, 32, 0.24);
+
+  --shadow-1: 0 1px 0 rgba(255,255,255,0.65) inset, 0 1px 2px rgba(16,21,12,0.08);
+  --shadow-2: 0 4px 16px rgba(16,21,12,0.10), 0 1px 0 rgba(255,255,255,0.7) inset;
+  --shadow-3: 0 12px 40px rgba(16,21,12,0.16), 0 1px 0 rgba(255,255,255,0.7) inset;
+  --surface-hover: rgba(16,21,12,0.025);
+  --surface-tint: rgba(16,21,12,0.02);
+
+  color-scheme: light;
 }
-*/
