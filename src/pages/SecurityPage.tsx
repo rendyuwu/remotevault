@@ -22,11 +22,11 @@ const STATUS = [
 ];
 
 const FAQ = [
-  ["What happens if I forget my passphrase?", "Encrypted data cannot be recovered. No server, storage provider, or support team can reset it."],
-  ["Can my storage provider read my secrets?", "No. Your provider only stores encrypted blobs. Without your passphrase and keys, ciphertext is meaningless."],
-  ["Do SSH/RDP sessions go through the storage provider?", "Never. Sessions connect directly from your device to the target host."],
-  ["What does device revocation do?", "It rotates the workspace key and re-encrypts active records. Revoked devices cannot decrypt future data."],
-  ["Is a weak passphrase safe?", "Argon2id makes brute-force expensive, but passphrase strength remains the primary defense."],
+  ["What happens if I forget my passphrase?", "Your encrypted data cannot be recovered. No server, storage provider, or support team can reset it. The passphrase never leaves your device."],
+  ["Can my storage provider read my secrets?", "No. Your provider only stores encrypted blobs. Without your passphrase and the derived keys, ciphertext is meaningless."],
+  ["Do SSH/RDP sessions go through the storage provider?", "Never. Sessions connect directly from your device to the target host. The storage provider is only used for encrypted sync data."],
+  ["What does device revocation actually do?", "It rotates the workspace key and re-encrypts active records. The revoked device cannot decrypt future data. However, it cannot erase data already downloaded or decrypted on that device."],
+  ["Is a weak passphrase safe?", "Argon2id makes brute-force expensive, but a weak passphrase is still the weakest link. Use 5+ random words or 16+ characters. If an attacker obtains your encrypted data, passphrase strength is your primary defense."],
 ];
 
 export function SecurityPage() {

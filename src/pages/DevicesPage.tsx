@@ -59,7 +59,7 @@ export function DevicesPage() {
 
       <div class="mt-5 rise rise-5">
         <Banner variant="warning" icon="i-alert" title="Revocation limitations">
-          Revoking a device prevents future decrypts after key rotation. It cannot erase data already downloaded or decrypted.
+          Revoking a device prevents future decrypts after key rotation. It cannot erase data already downloaded or decrypted. If the device has storage provider credentials, revoke those separately.
         </Banner>
       </div>
 

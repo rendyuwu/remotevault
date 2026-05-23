@@ -29,9 +29,11 @@ type SyncSettingKey = typeof SETTINGS[number]["key"];
 const initialSettings = Object.fromEntries(SETTINGS.map((item) => [item.key, item.initial])) as Record<SyncSettingKey, boolean>;
 
 const SYNC_SCOPE = [
-  ["i-lock", "Encrypted data", "Vault items, connection profiles, encrypted events, and wrapped workspace key", "encrypted"],
-  ["i-info", "Provider metadata", "Workspace ID, device IDs, event timestamps, object paths, and object sizes", "mono"],
-  ["i-x", "Never synced", "Master passphrase, decrypted keys, and SSH/RDP session traffic", "danger"],
+  ["Encrypted", "Vault items (passwords, private keys, passphrases, secrets)", "encrypted"],
+  ["Encrypted", "Connection profiles (hostnames, usernames, notes, tags)", "encrypted"],
+  ["Encrypted", "Workspace key (wrapped with your passphrase-derived KEK)", "encrypted"],
+  ["Metadata", "Event IDs, timestamps, device IDs, object paths (visible to provider)", "warning"],
+  ["Never", "Master passphrase, derived keys, SSH/RDP session traffic", "ghost"],
 ] as const;
 
 const EVENTS = [
@@ -119,14 +121,15 @@ export function SyncPage() {
         <Card title="What is synced">
           <div class="setting-list">
             <For each={SYNC_SCOPE}>
-              {([icon, title, desc, variant]) => (
+              {([label, desc, variant]) => (
                 <div class="setting-row">
-                  <div class="sync-scope-title"><Icon name={icon} /><div><div class="setting-title">{title}</div><div class="hint">{desc}</div></div></div>
-                  <Chip variant={variant}>{title}</Chip>
+                  <span class="sync-scope-title"><Chip variant={variant}>{label}</Chip></span>
+                  <span class="text-sm text-secondary">{desc}</span>
                 </div>
               )}
             </For>
           </div>
+          <div class="mt-4"><A class="text-sm text-accent" href="/security">Full security transparency →</A></div>
         </Card>
       </section>
     </>

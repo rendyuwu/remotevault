@@ -60,7 +60,7 @@ export function SettingsPage() {
               <FormField label="Scrollback lines">{(field) => <select id={field.id} class="select"><option>1,000</option><option>5,000</option><option selected>10,000</option><option>50,000</option><option>Unlimited</option></select>}</FormField>
               <FormField label="Cursor style">{(field) => <select id={field.id} class="select"><option selected>Block</option><option>Underline</option><option>Bar</option></select>}</FormField>
             </div>
-            <FormField label="Terminal theme" hint="Defines foreground, background, cursor, selection, and ANSI color palette for terminal.">{(field) => <select id={field.id} class="select"><option selected>Default Dark</option><option>Default Light</option><option>Tokyo Night</option><option>Tokyo Day</option></select>}</FormField>
+            <FormField label="Terminal theme" hint="Defines foreground, background, cursor, selection, and ANSI color palette for terminal.">{(field) => <select id={field.id} class="select"><option selected>Default Dark</option><option>Default Light</option><option>Tokyo Night</option><option>Tokyo Day</option><option>Night Owl</option><option>Light Owl</option></select>}</FormField>
           </section>
 
           <section class="settings-section" id="behavior">
@@ -99,9 +99,10 @@ function BackupModal(props: { open: boolean; title: string; action: string; impo
   return (
     <Modal open={props.open} onClose={props.onClose} label={props.title}>
       <div class="modal-stack">
-        <header><h2>{props.title}</h2><p>{props.importMode ? "Restore connections and Vault items from an encrypted .rvbackup file." : "Create an encrypted .rvbackup file containing workspace data."}</p></header>
+        <header><h2>{props.title}</h2><p>{props.importMode ? "Restore connections and Vault items from a previously exported .rvbackup file." : "Create an encrypted .rvbackup file containing all connections, Vault items, and workspace settings."}</p></header>
+        {!props.importMode && <div class="backup-details"><span>7 connections</span><span>4 Vault items</span><span>XChaCha20-Poly1305 encryption</span></div>}
         {props.importMode && <div class="file-drop"><Icon name="i-cloud" /><div>Drop .rvbackup file here or click to browse</div></div>}
-        <FormField label={props.importMode ? "Backup passphrase" : "Confirm Vault passphrase"}>{(field) => <input id={field.id} class="input" type="password" placeholder="Enter passphrase" />}</FormField>
+        <FormField label={props.importMode ? "Backup passphrase" : "Confirm Vault passphrase"} hint={props.importMode ? "This is the Vault passphrase that was active at export time." : undefined}>{(field) => <input id={field.id} class="input" type="password" placeholder={props.importMode ? "Passphrase used when backup was created" : "Enter passphrase to encrypt backup"} />}</FormField>
         <footer class="modal-actions"><Btn variant="ghost" onClick={props.onClose}>Cancel</Btn><Btn variant={props.importMode ? "secondary" : "primary"} onClick={props.onClose}>{props.action}</Btn></footer>
       </div>
     </Modal>
