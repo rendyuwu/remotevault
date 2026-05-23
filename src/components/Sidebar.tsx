@@ -3,7 +3,7 @@ import { useLocation, A } from "@solidjs/router";
 import { Icon } from "./Icon";
 
 const NAV_ITEMS = [
-  { label: "Connections", icon: "i-server", href: "/connections", activePaths: ["/connections", "/connection-edit"] },
+  { label: "Connections", icon: "i-server", href: "/connections", activePaths: ["/connections"] },
   { label: "Vault", icon: "i-vault", href: "/vault", activePaths: ["/vault", "/vault-edit", "/vault-locked"] },
   { label: "Sessions", icon: "i-terminal", href: "/session", activePaths: ["/session"] },
   { label: "Sync", icon: "i-sync", href: "/sync", activePaths: ["/sync"] },

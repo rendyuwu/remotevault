@@ -10,20 +10,12 @@ function renderAppAt(path: string) {
     <MemoryRouter root={App} history={history}>
       <Route path="/welcome" component={() => <div>welcome</div>} />
       <Route path="/security" component={() => <div>security</div>} />
-      <Route path="/connection-edit" component={() => <div>connection-edit</div>} />
       <Route path="/unknown" component={() => <div>unknown</div>} />
     </MemoryRouter>
   ));
 }
 
 describe("App shell", () => {
-  it("renders fallback title for edit routes", () => {
-    renderAppAt("/connection-edit");
-
-    expect(screen.getByText("Connections / Edit connection")).not.toBeNull();
-    expect(screen.getByText("connection-edit")).not.toBeNull();
-  });
-
   it("falls back to product title for unmapped shell routes", () => {
     renderAppAt("/unknown");
 

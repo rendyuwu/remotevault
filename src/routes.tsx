@@ -1,5 +1,4 @@
 import { Route, Navigate } from "@solidjs/router";
-import { ConnectionEditPage } from "./pages/ConnectionEditPage";
 import { ConnectionsPage } from "./pages/ConnectionsPage";
 import { ProviderSetupPage } from "./pages/ProviderSetupPage";
 import { SessionPage } from "./pages/SessionPage";
@@ -28,7 +27,6 @@ export function routes() {
       <Route path="/vault-locked" component={VaultLockedPage} />
       <Route path="/vault" component={VaultPage} />
       <Route path="/connections" component={ConnectionsPage} />
-      <Route path="/connection-edit" component={ConnectionEditPage} />
       <Route path="/session" component={SessionPage} />
       <Route path="/sync" component={() => <Stub name="sync" />} />
       <Route path="/devices" component={() => <Stub name="devices" />} />

@@ -8,7 +8,6 @@ const ONBOARDING_ROUTES = ["/welcome", "/provider-setup", "/vault-create"];
 
 const TITLES: Record<string, string> = {
   "/connections": "Connections",
-  "/connection-edit": "Connections / Edit connection",
   "/vault": "Vault",
   "/vault-locked": "Vault",
   "/vault-edit": "Vault / Edit secret",

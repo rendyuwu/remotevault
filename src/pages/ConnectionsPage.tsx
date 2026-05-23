@@ -1,5 +1,5 @@
 import { For, createMemo, createSignal } from "solid-js";
-import { A, useNavigate } from "@solidjs/router";
+import { useNavigate } from "@solidjs/router";
 import { Btn } from "../components/Btn";
 import { ConflictModal } from "../components/ConflictModal";
 import { FilterChip } from "../components/FilterChip";
@@ -19,7 +19,6 @@ interface ConnectionItem {
   name: string;
   protocol: Protocol;
   host: string;
-  folder: string;
   status: "synced" | "conflict" | "pending" | "local";
   port: string;
   username: string;
@@ -29,13 +28,13 @@ interface ConnectionItem {
 const FILTERS: Filter[] = ["All", "SSH", "RDP"];
 
 const CONNECTIONS: ConnectionItem[] = [
-  { id: "prod-api", name: "Production API Server", protocol: "SSH", host: "10.0.0.10", folder: "Production", status: "synced", port: "22", username: "ubuntu", useVault: true },
-  { id: "prod-worker", name: "Production Worker", protocol: "SSH", host: "10.0.0.11", folder: "Production", status: "synced", port: "22", username: "ubuntu", useVault: true },
-  { id: "prod-db", name: "Production DB Bastion", protocol: "SSH", host: "10.0.0.5", folder: "Production", status: "synced", port: "22", username: "ubuntu", useVault: true },
-  { id: "prod-win", name: "Production Windows Server", protocol: "RDP", host: "10.0.0.20", folder: "Production", status: "synced", port: "3389", username: "Administrator", useVault: true },
-  { id: "staging-api", name: "Staging API", protocol: "SSH", host: "staging.example.com", folder: "Staging", status: "conflict", port: "22", username: "deploy", useVault: true },
-  { id: "staging-win", name: "Staging Windows", protocol: "RDP", host: "staging-win.example.com", folder: "Staging", status: "pending", port: "3389", username: "Administrator", useVault: true },
-  { id: "homelab-nas", name: "Homelab NAS", protocol: "SSH", host: "192.168.1.50", folder: "Homelab", status: "local", port: "22", username: "admin", useVault: false },
+  { id: "prod-api", name: "Production API Server", protocol: "SSH", host: "10.0.0.10", status: "synced", port: "22", username: "ubuntu", useVault: true },
+  { id: "prod-worker", name: "Production Worker", protocol: "SSH", host: "10.0.0.11", status: "synced", port: "22", username: "ubuntu", useVault: true },
+  { id: "prod-db", name: "Production DB Bastion", protocol: "SSH", host: "10.0.0.5", status: "synced", port: "22", username: "ubuntu", useVault: true },
+  { id: "prod-win", name: "Production Windows Server", protocol: "RDP", host: "10.0.0.20", status: "synced", port: "3389", username: "Administrator", useVault: true },
+  { id: "staging-api", name: "Staging API", protocol: "SSH", host: "staging.example.com", status: "conflict", port: "22", username: "deploy", useVault: true },
+  { id: "staging-win", name: "Staging Windows", protocol: "RDP", host: "staging-win.example.com", status: "pending", port: "3389", username: "Administrator", useVault: true },
+  { id: "homelab-nas", name: "Homelab NAS", protocol: "SSH", host: "192.168.1.50", status: "local", port: "22", username: "admin", useVault: false },
 ];
 
 const blankConnection = (): ConnectionItem => ({
@@ -43,7 +42,6 @@ const blankConnection = (): ConnectionItem => ({
   name: "",
   protocol: "SSH",
   host: "",
-  folder: "Production",
   status: "local",
   port: "22",
   username: "",
@@ -59,14 +57,13 @@ export function ConnectionsPage() {
   const [draft, setDraft] = createSignal<ConnectionItem>(blankConnection());
   const [modalOpen, setModalOpen] = createSignal(false);
   const [conflictOpen, setConflictOpen] = createSignal(false);
-  const [openCrumb, setOpenCrumb] = createSignal<"root" | "folder">();
 
   const visibleConnections = createMemo(() => {
     const filter = activeFilter();
     const query = searchQuery().trim().toLowerCase();
     return CONNECTIONS.filter((item) => {
       const matchesFilter = filter === "All" || item.protocol === filter;
-      const matchesSearch = !query || [item.name, item.host, item.folder, item.username].some((value) => value.toLowerCase().includes(query));
+      const matchesSearch = !query || [item.name, item.host, item.username].some((value) => value.toLowerCase().includes(query));
       return matchesFilter && matchesSearch;
     });
   });
@@ -87,7 +84,9 @@ export function ConnectionsPage() {
     setDraft((current) => ({ ...current, [key]: value }));
   };
 
-  const selectedEditHref = () => `/connection-edit?id=${selectedId()}`;
+  const updateDraftProtocol = (protocol: Protocol) => {
+    setDraft((current) => ({ ...current, protocol, port: protocol === "SSH" ? "22" : "3389" }));
+  };
 
   const openConnection = (connection: ConnectionItem) => {
     if (connection.status === "conflict") {
@@ -109,36 +108,11 @@ export function ConnectionsPage() {
               <input type="search" placeholder="Search connections..." value={searchQuery()} onInput={(e) => setSearchQuery(e.currentTarget.value)} />
             </label>
             <Btn variant="primary" icon="i-plus" onClick={openAddModal}>New connection</Btn>
-            <A class="btn btn-secondary btn-sm" href={selectedEditHref()}>Edit selected</A>
           </>
         }
       />
 
-      <section class="folder-breadcrumb rise rise-1" aria-label="Connection breadcrumb">
-        <button type="button" class="breadcrumb-segment" aria-label="Open connection folder menu" aria-expanded={openCrumb() === "root"} onClick={() => setOpenCrumb(openCrumb() === "root" ? undefined : "root")}>
-          <span class="breadcrumb-label">All Connections</span>
-          <Icon name="i-chevron" size="2xs" />
-          <div class={`breadcrumb-dropdown${openCrumb() === "root" ? " open" : ""}`}>
-            <div class="breadcrumb-option active">All Connections <span class="folder-count">7</span></div>
-            <div class="breadcrumb-option">Production <span class="folder-count">4</span></div>
-            <div class="breadcrumb-option">Staging <span class="folder-count">2</span></div>
-            <div class="breadcrumb-option">Homelab <span class="folder-count">1</span></div>
-          </div>
-        </button>
-        <span class="breadcrumb-sep">/</span>
-        <button type="button" class="breadcrumb-segment" aria-label="Open production folder menu" aria-expanded={openCrumb() === "folder"} onClick={() => setOpenCrumb(openCrumb() === "folder" ? undefined : "folder")}>
-          <span class="breadcrumb-label">Production</span>
-          <Icon name="i-chevron" size="2xs" />
-          <div class={`breadcrumb-dropdown${openCrumb() === "folder" ? " open" : ""}`}>
-            <div class="breadcrumb-option active">All <span class="folder-count">4</span></div>
-            <div class="breadcrumb-option">API Servers <span class="folder-count">2</span></div>
-            <div class="breadcrumb-option">Databases <span class="folder-count">1</span></div>
-            <div class="breadcrumb-option">Windows <span class="folder-count">1</span></div>
-          </div>
-        </button>
-      </section>
-
-      <section class="vault-filter-bar rise rise-2" aria-label="Connection filters">
+      <section class="vault-filter-bar rise rise-1" aria-label="Connection filters">
         <div class="vault-filter-chips">
           <For each={FILTERS}>
             {(filter) => <FilterChip label={filter} active={activeFilter() === filter} onClick={() => setActiveFilter(filter)} />}
@@ -146,7 +120,7 @@ export function ConnectionsPage() {
         </div>
       </section>
 
-      <section class="rise rise-3" aria-label="Connections">
+      <section class="rise rise-2" aria-label="Connections">
         <PillGrid empty={!visibleConnections().length} emptyIcon="i-server" emptyMessage="No connections match this filter">
           <For each={visibleConnections()}>
             {(connection) => (
@@ -179,7 +153,7 @@ export function ConnectionsPage() {
                   type="button"
                   class={`vault-type-opt ${protocol.toLowerCase()}${draft().protocol === protocol ? " active" : ""}`}
                   aria-pressed={draft().protocol === protocol}
-                  onClick={() => updateDraft("protocol", protocol)}
+                  onClick={() => updateDraftProtocol(protocol)}
                 >
                   <span class={`pill-icon ${protocol.toLowerCase()}`}><Icon name={protocol === "SSH" ? "i-terminal" : "i-server"} size="sm" /></span>
                   <span>{protocol}</span>
@@ -200,9 +174,6 @@ export function ConnectionsPage() {
             </FormField>
             <FormField label="Username">
               {(field) => <input id={field.id} class="input" value={draft().username} placeholder="login user" onInput={(e) => updateDraft("username", e.currentTarget.value)} />}
-            </FormField>
-            <FormField label="Folder">
-              {(field) => <input id={field.id} class="input" value={draft().folder} placeholder="Production" onInput={(e) => updateDraft("folder", e.currentTarget.value)} />}
             </FormField>
             <Toggle on={draft().useVault} label="Use Vault credentials" onChange={(value) => updateDraft("useVault", value)} />
           </div>

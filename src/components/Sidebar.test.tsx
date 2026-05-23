@@ -14,13 +14,6 @@ function renderAt(path: string) {
 }
 
 describe("Sidebar", () => {
-  it("marks Connections active on edit route", () => {
-    renderAt("/connection-edit");
-
-    expect(screen.getByRole("link", { name: "Connections" })).toHaveClass("active");
-    expect(screen.getByRole("link", { name: "Vault" })).not.toHaveClass("active");
-  });
-
   it("marks Vault active on edit route", () => {
     renderAt("/vault-edit");
 

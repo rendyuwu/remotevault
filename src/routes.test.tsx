@@ -59,12 +59,6 @@ describe("routes", () => {
     expect(screen.getByText("Production API Server")).not.toBeNull();
   });
 
-  it("renders connection edit route", () => {
-    renderRoutesAt("/connection-edit");
-
-    expect(screen.getByText("Connection Profile")).not.toBeNull();
-  });
-
   it("renders session route", () => {
     renderRoutesAt("/session");
 

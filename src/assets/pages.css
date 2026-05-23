@@ -200,39 +200,6 @@
 
 .file-drop svg { margin-bottom: var(--space-2); color: var(--text-faint); }
 
-/* ═══════════════════════════════════════════════════════════
-   Folder Tree (Connections)
-   ═══════════════════════════════════════════════════════════ */
-
-.folder-tree {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-1);
-  margin-bottom: var(--space-4);
-  padding: var(--space-3);
-  background: var(--bg-surface);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-md);
-}
-
-.folder-item {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-  padding: var(--space-2) var(--space-3);
-  border-radius: var(--radius-sm);
-  font-size: var(--fs-sm);
-  color: var(--text-secondary);
-  cursor: pointer;
-  transition: background var(--dur-base), color var(--dur-base);
-}
-
-.folder-item:hover { background: var(--bg-surface-2); color: var(--text-primary); }
-.folder-item.active { background: var(--bg-surface-2); color: var(--accent); }
-.folder-item svg { width: var(--icon-xs); height: var(--icon-xs); flex-shrink: 0; }
-.folder-item .folder-count { margin-left: auto; font-size: var(--fs-xs); color: var(--text-muted); }
-.folder-item.nested { padding-left: var(--space-6); }
-
 /* Protocol filter chips */
 .proto-filter {
   display: flex;
@@ -256,15 +223,6 @@
 .proto-chip:hover { border-color: var(--border-strong); color: var(--text-primary); }
 .proto-chip:focus-visible { outline: var(--stroke-thin) solid var(--accent); outline-offset: var(--stroke-thin); }
 .proto-chip.active { border-color: var(--accent); color: var(--accent); background: var(--accent-faint); }
-
-.folder-breadcrumb { display: flex; align-items: center; gap: var(--space-2); margin-bottom: var(--space-4); }
-.breadcrumb-segment { position: relative; display: flex; align-items: center; gap: var(--space-2); padding: var(--space-2) var(--space-3); border: var(--hairline) solid var(--border-subtle); border-radius: var(--radius-md); background: var(--bg-surface); color: var(--text-secondary); font-size: var(--fs-sm); }
-.breadcrumb-label { color: var(--text-primary); }
-.breadcrumb-sep { color: var(--text-muted); }
-.breadcrumb-dropdown { display: none; position: absolute; top: calc(100% + var(--space-1)); left: 0; z-index: var(--z-dropdown); min-width: calc(var(--settings-nav-w) + var(--space-6)); padding: var(--space-2); border: var(--hairline) solid var(--border-subtle); border-radius: var(--radius-md); background: var(--bg-surface); box-shadow: var(--shadow-2); }
-.breadcrumb-dropdown.open { display: block; }
-.breadcrumb-option { display: flex; justify-content: space-between; gap: var(--space-4); padding: var(--space-2) var(--space-3); border-radius: var(--radius-sm); color: var(--text-secondary); }
-.breadcrumb-option.active { background: var(--bg-surface-2); color: var(--accent); }
 
 /* ═══════════════════════════════════════════════════════════
    Vault Picker

@@ -35,22 +35,14 @@ const names = [
 ];
 
 describe("ConnectionsPage", () => {
-  it("renders topbar actions, folders, filters, and full-width grid", () => {
+  it("renders topbar actions, filters, and full-width grid", () => {
     renderConnections();
 
     expect(document.querySelector(".topbar-title")).toHaveTextContent("Connections");
     expect(screen.getByLabelText("Search connections")).not.toBeNull();
     expect(screen.getByRole("button", { name: /New connection/ })).not.toBeNull();
-
-    const breadcrumb = screen.getByLabelText("Connection breadcrumb");
-    expect(screen.getByRole("button", { name: "Open connection folder menu" })).toHaveAttribute("aria-expanded", "false");
-    expect(screen.getByRole("button", { name: "Open production folder menu" })).toHaveAttribute("aria-expanded", "false");
-    expect(document.querySelector(".breadcrumb-dropdown.open")).toBeNull();
-    fireEvent.click(screen.getByRole("button", { name: "Open connection folder menu" }));
-    expect(screen.getByRole("button", { name: "Open connection folder menu" })).toHaveAttribute("aria-expanded", "true");
-    ["All Connections", "Production", "Staging", "Homelab"].forEach((label) => {
-      expect(within(breadcrumb).getAllByText(new RegExp(label)).length).toBeGreaterThan(0);
-    });
+    expect(screen.queryByText("Edit selected")).toBeNull();
+    expect(screen.queryByLabelText("Connection breadcrumb")).toBeNull();
 
     const filters = screen.getByLabelText("Connection filters");
     ["All", "SSH", "RDP"].forEach((label) => {
@@ -62,7 +54,6 @@ describe("ConnectionsPage", () => {
     expect(document.querySelector(".content-narrow")).toBeNull();
     expect(document.querySelector(".rise.rise-1")).not.toBeNull();
     expect(document.querySelector(".rise.rise-2")).not.toBeNull();
-    expect(document.querySelector(".rise.rise-3")).not.toBeNull();
   });
 
   it("filters connections by protocol and search query", () => {
@@ -80,16 +71,6 @@ describe("ConnectionsPage", () => {
 
     expect(screen.getByText("Staging Windows")).not.toBeNull();
     expect(screen.queryByText("Production Windows Server")).toBeNull();
-  });
-
-  it("links edit selected to selected connection", () => {
-    renderConnections();
-    const grid = document.querySelector(".pill-grid")!;
-    const worker = within(grid as HTMLElement).getByText("Production Worker").closest('[role="button"]')!;
-
-    fireEvent.click(worker);
-
-    expect(screen.getByRole("link", { name: "Edit selected" })).toHaveAttribute("href", "/connection-edit?id=prod-worker");
   });
 
   it("selects on single-click and navigates to session on double-click", async () => {
@@ -121,7 +102,7 @@ describe("ConnectionsPage", () => {
     expect(screen.getByLabelText("Host")).toHaveValue("");
   });
 
-  it("prefills edit modal for existing connections", () => {
+  it("prefills edit modal for existing connections and switches protocol", () => {
     renderConnections();
     const grid = document.querySelector(".pill-grid")!;
     const api = within(grid as HTMLElement).getByText("Production API Server").closest('[role="button"]')!;
@@ -133,7 +114,13 @@ describe("ConnectionsPage", () => {
     expect(screen.getByLabelText("Host")).toHaveValue("10.0.0.10");
     expect(screen.getByLabelText("Port")).toHaveValue("22");
     expect(screen.getByLabelText("Username")).toHaveValue("ubuntu");
-    expect(screen.getByLabelText("Folder")).toHaveValue("Production");
+    expect(screen.queryByLabelText("Folder")).toBeNull();
+
+    const protocolGroup = screen.getByRole("group", { name: "Connection protocol" });
+    fireEvent.click(within(protocolGroup).getByRole("button", { name: "RDP" }));
+
+    expect(within(protocolGroup).getByRole("button", { name: "RDP" })).toHaveAttribute("aria-pressed", "true");
+    expect(screen.getByLabelText("Port")).toHaveValue("3389");
     expect(screen.getByRole("button", { name: "Save changes" })).not.toBeNull();
   });
 
