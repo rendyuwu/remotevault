@@ -67,8 +67,13 @@ describe("VaultPage", () => {
     expect(screen.getByLabelText("Tags")).toHaveAttribute("placeholder", "production, ssh, linux");
     expect(screen.getByLabelText("Notes")).toHaveAttribute("placeholder", "Optional notes about this secret...");
 
+    fireEvent.input(screen.getByLabelText("Name"), { target: { value: "Typed secret" } });
+    expect(screen.getByLabelText("Name")).toHaveValue("Typed secret");
     fireEvent.click(screen.getByRole("button", { name: "Cancel" }));
     expect(document.querySelector(".modal-overlay.show")).toBeNull();
+
+    fireEvent.click(screen.getByRole("button", { name: /Add secret/ }));
+    expect(screen.getByLabelText("Name")).toHaveValue("");
   });
 
   it("opens conflict modal for conflicted secret and prefilled edit modal for normal secret", () => {
@@ -87,9 +92,16 @@ describe("VaultPage", () => {
     fireEvent.click(within(normalPill as HTMLElement).getByRole("button", { name: "Edit" }));
     expect(screen.getByRole("dialog", { name: "Edit Secret" })).not.toBeNull();
     expect(screen.getByLabelText("Name")).toHaveValue("Production RDP Password");
-    expect(screen.getByLabelText("Secret value")).toHaveTextContent("••••••••••••");
+    expect(screen.getByLabelText("Secret value")).toHaveValue("••••••••••••");
     expect(screen.getByLabelText("Tags")).toHaveValue("production, rdp, windows");
-    expect(screen.getByLabelText("Notes")).toHaveTextContent("Administrator password for production Windows hosts.");
+    expect(screen.getByLabelText("Notes")).toHaveValue("Administrator password for production Windows hosts.");
     expect(screen.getByRole("button", { name: "Save changes" })).not.toBeNull();
+
+    fireEvent.input(screen.getByLabelText("Notes"), { target: { value: "Dirty note" } });
+    fireEvent.click(screen.getByRole("button", { name: "Cancel" }));
+    const sshPill = within(grid as HTMLElement).getByText("Production SSH Key (ed25519)").closest('[role="button"]')!;
+    fireEvent.click(within(sshPill as HTMLElement).getByRole("button", { name: "Edit" }));
+    expect(screen.getByLabelText("Name")).toHaveValue("Production SSH Key (ed25519)");
+    expect(screen.getByLabelText("Notes")).toHaveValue("Generated 2026-01-15. Used for all production Linux servers. Rotated quarterly.");
   });
 });

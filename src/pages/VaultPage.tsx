@@ -94,6 +94,10 @@ export function VaultPage() {
   const [modalOpen, setModalOpen] = createSignal(false);
   const [conflictOpen, setConflictOpen] = createSignal(false);
   const [selectedType, setSelectedType] = createSignal<SecretType>("password");
+  const [secretName, setSecretName] = createSignal("");
+  const [secretValue, setSecretValue] = createSignal("");
+  const [secretTags, setSecretTags] = createSignal("");
+  const [secretNotes, setSecretNotes] = createSignal("");
 
   const visibleSecrets = createMemo(() => {
     const filter = activeFilter();
@@ -103,12 +107,20 @@ export function VaultPage() {
   const openAddModal = () => {
     setEditingSecret(undefined);
     setSelectedType("password");
+    setSecretName("");
+    setSecretValue("");
+    setSecretTags("");
+    setSecretNotes("");
     setModalOpen(true);
   };
 
   const openEditModal = (secret: SecretItem) => {
     setEditingSecret(secret);
     setSelectedType(secret.type);
+    setSecretName(secret.name);
+    setSecretValue(secret.value);
+    setSecretTags(secret.tags);
+    setSecretNotes(secret.notes);
     setModalOpen(true);
   };
 
@@ -194,16 +206,16 @@ export function VaultPage() {
 
           <div class="form-grid">
             <FormField label="Name" required>
-              {(field) => <input id={field.id} class="input" value={editingSecret()?.name ?? ""} placeholder="e.g. Production RDP Password" />}
+              {(field) => <input id={field.id} class="input" value={secretName()} placeholder="e.g. Production RDP Password" onInput={(e) => setSecretName(e.currentTarget.value)} />}
             </FormField>
             <FormField label="Secret value" required>
-              {(field) => <textarea id={field.id} class="textarea mono" rows="3" placeholder="Enter secret value...">{editingSecret()?.value ?? ""}</textarea>}
+              {(field) => <textarea id={field.id} class="textarea mono" rows="3" value={secretValue()} placeholder="Enter secret value..." onInput={(e) => setSecretValue(e.currentTarget.value)} />}
             </FormField>
             <FormField label="Tags">
-              {(field) => <input id={field.id} class="input" value={editingSecret()?.tags ?? ""} placeholder="production, ssh, linux" />}
+              {(field) => <input id={field.id} class="input" value={secretTags()} placeholder="production, ssh, linux" onInput={(e) => setSecretTags(e.currentTarget.value)} />}
             </FormField>
             <FormField label="Notes">
-              {(field) => <textarea id={field.id} class="textarea" rows="2" placeholder="Optional notes about this secret...">{editingSecret()?.notes ?? ""}</textarea>}
+              {(field) => <textarea id={field.id} class="textarea" rows="2" value={secretNotes()} placeholder="Optional notes about this secret..." onInput={(e) => setSecretNotes(e.currentTarget.value)} />}
             </FormField>
           </div>
 
