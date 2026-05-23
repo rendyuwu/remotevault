@@ -62,15 +62,15 @@ export function ProviderSetupPage() {
               type="button"
               role="radio"
               aria-checked={provider() === option.id}
-              class={`provider-card${provider() === option.id ? " selected" : ""}`}
+              class={`choice provider-card${provider() === option.id ? " selected" : ""}`}
               onClick={() => setProvider(option.id)}
             >
               <span class="provider-radio" aria-hidden="true" />
               <span class="p-icon">
                 <Icon name={option.icon} size="sm" />
               </span>
-              <span class="provider-title">{option.title}</span>
-              <span class="provider-copy">{option.body}</span>
+              <h4>{option.title}</h4>
+              <p>{option.body}</p>
               <span class="tags">
                 <For each={option.tags}>{(tag) => <span class="tag">{tag}</span>}</For>
               </span>
@@ -80,7 +80,7 @@ export function ProviderSetupPage() {
       </div>
 
       <Show when={provider() === "local"}>
-        <section class="config-section rise rise-3" id="config-local">
+        <section class="card config-section rise rise-3" id="config-local">
           <h3>
             <span class="step-num">1</span>
             Configure Local Folder
@@ -135,7 +135,7 @@ export function ProviderSetupPage() {
       </Show>
 
       <Show when={provider() === "s3"}>
-        <section class="config-section rise rise-3" id="config-s3">
+        <section class="card config-section rise rise-3" id="config-s3">
           <h3>
             <span class="step-num">1</span>
             Configure S3-Compatible Storage
