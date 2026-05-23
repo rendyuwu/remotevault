@@ -9,6 +9,7 @@ function renderVaultCreate() {
   render(() => (
     <MemoryRouter history={history}>
       <Route path="/vault-create" component={VaultCreatePage} />
+      <Route path="/welcome" component={() => <div>welcome</div>} />
       <Route path="/connections" component={() => <div>connections</div>} />
     </MemoryRouter>
   ));
@@ -32,13 +33,16 @@ describe("VaultCreatePage", () => {
   it("toggles visibility and marks launch complete", async () => {
     const history = renderVaultCreate();
     const input = screen.getByPlaceholderText("Enter a strong passphrase...");
+    localStorage.setItem("rv:vaultLocked", "1");
 
+    expect(screen.getByRole("link", { name: "← Back" })).toHaveAttribute("href", "/welcome");
     expect(input).toHaveAttribute("type", "password");
     fireEvent.click(screen.getByRole("button", { name: "Toggle master passphrase visibility" }));
     expect(input).toHaveAttribute("type", "text");
 
     fireEvent.click(screen.getByRole("button", { name: /Create workspace/ }));
     expect(localStorage.getItem("rv:launched")).toBe("1");
+    expect(localStorage.getItem("rv:vaultLocked")).toBeNull();
     await waitFor(() => expect(history.get()).toBe("/connections"));
   });
 });

@@ -53,9 +53,9 @@ export function WelcomePage() {
         </p>
       </header>
 
-      <section class="choice-grid rise rise-2" aria-label="Setup options">
+      <section class="choice-grid" aria-label="Setup options">
         <button
-          class={`choice${setupMode() === "local" ? " selected" : ""}`}
+          class={`choice rise rise-2${setupMode() === "local" ? " selected" : ""}`}
           type="button"
           aria-pressed={setupMode() === "local"}
           onClick={() => setSetupMode("local")}
@@ -69,7 +69,7 @@ export function WelcomePage() {
         </button>
 
         <button
-          class={`choice${setupMode() === "sync" ? " selected" : ""}`}
+          class={`choice rise rise-3${setupMode() === "sync" ? " selected" : ""}`}
           type="button"
           aria-pressed={setupMode() === "sync"}
           onClick={() => setSetupMode("sync")}
@@ -83,7 +83,7 @@ export function WelcomePage() {
         </button>
       </section>
 
-      <div class="welcome-action-row rise rise-3">
+      <div class="welcome-action-row rise rise-4">
         <A class="btn btn-primary btn-lg" href={continueHref()}>
           Continue
           <Icon name="i-arrow-right" size="xs" />

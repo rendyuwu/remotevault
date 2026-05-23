@@ -32,7 +32,9 @@ describe("WelcomePage", () => {
     renderWelcome();
 
     expect(screen.getByText("RemoteVault · v0.1.0 · open source").closest(".welcome-hero")).toHaveClass("rise", "rise-1");
-    expect(screen.getByRole("link", { name: /Continue/ }).parentElement).toHaveClass("rise", "rise-3");
+    expect(screen.getByRole("button", { name: /Use locally only/ })).toHaveClass("rise", "rise-2");
+    expect(screen.getByRole("button", { name: /Sync with my own storage/ })).toHaveClass("rise", "rise-3");
+    expect(screen.getByRole("link", { name: /Continue/ }).parentElement).toHaveClass("rise", "rise-4");
     expect(screen.getByText("SSH/RDP sessions always connect direct.").parentElement).toHaveClass("rise", "rise-5");
   });
 });

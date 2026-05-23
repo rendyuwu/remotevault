@@ -33,6 +33,7 @@ describe("Sidebar", () => {
     renderAt("/connections");
 
     expect(screen.getByRole("link", { name: /Vault/ })).not.toHaveClass("active");
+    expect(screen.getByRole("link", { name: /Vault/ })).toHaveAttribute("href", "/vault-locked");
     expect(screen.getByText("Locked")).not.toBeNull();
     expect(screen.getByText("vault locked")).not.toBeNull();
   });

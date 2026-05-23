@@ -23,6 +23,7 @@ export function VaultCreatePage() {
 
   const createWorkspace = () => {
     localStorage.setItem("rv:launched", "1");
+    localStorage.removeItem("rv:vaultLocked");
     navigate("/connections");
   };
 
@@ -116,7 +117,7 @@ export function VaultCreatePage() {
       </details>
 
       <div class="footer-actions rise rise-5">
-        <A class="btn btn-ghost" href="/provider-setup">
+        <A class="btn btn-ghost" href="/welcome">
           ← Back
         </A>
         <button class="btn btn-primary btn-lg" type="button" onClick={createWorkspace}>

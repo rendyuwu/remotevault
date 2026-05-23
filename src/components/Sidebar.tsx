@@ -19,6 +19,7 @@ export function Sidebar() {
   const location = useLocation();
   const isActive = (paths: readonly string[]) => paths.some((path) => location.pathname === path);
   const isLocked = () => location.pathname === "/vault-locked" || localStorage.getItem("rv:vaultLocked") === "1";
+  const itemHref = (item: (typeof NAV_ITEMS)[number]) => item.label === "Vault" && isLocked() ? "/vault-locked" : item.href;
 
   return (
     <aside class="sidebar">
@@ -30,7 +31,7 @@ export function Sidebar() {
       <nav class="sidebar-nav">
         <For each={NAV_ITEMS}>
           {(item) => (
-            <A href={item.href} class={`nav-item${isActive(item.activePaths) ? " active" : ""}`}>
+            <A href={itemHref(item)} class={`nav-item${isActive(item.activePaths) ? " active" : ""}`}>
               <Icon name={item.icon} />
               {item.label}
               {item.label === "Vault" && isLocked() && <span class="chip chip-locked nav-lock-chip">Locked</span>}
