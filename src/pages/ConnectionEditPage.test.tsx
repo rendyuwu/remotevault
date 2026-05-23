@@ -37,6 +37,14 @@ describe("ConnectionEditPage", () => {
     expect(screen.getByLabelText("Port")).toHaveValue("22");
     expect(screen.getByLabelText("Username")).toHaveValue("ubuntu");
     expect(screen.getByLabelText("Folder")).toHaveValue("Production");
+
+    fireEvent.input(screen.getByLabelText("Name"), { target: { value: "Renamed API" } });
+    fireEvent.input(screen.getByLabelText("Host"), { target: { value: "10.0.0.12" } });
+    fireEvent.input(screen.getByLabelText("Folder"), { target: { value: "Staging" } });
+
+    expect(screen.getByLabelText("Name")).toHaveValue("Renamed API");
+    expect(screen.getByLabelText("Host")).toHaveValue("10.0.0.12");
+    expect(screen.getByLabelText("Folder")).toHaveValue("Staging");
   });
 
   it("shows SSH defaults, auth choices, and SSH vault picker", () => {
@@ -75,6 +83,10 @@ describe("ConnectionEditPage", () => {
     expect(screen.getByLabelText("Domain")).toHaveValue("PROD");
     expect(screen.getByLabelText("Screen size")).toHaveValue("Auto (match window)");
     expect(screen.getByLabelText("Certificate validation")).toHaveValue("Warn on invalid certificate");
+    fireEvent.change(screen.getByLabelText("Screen size"), { target: { value: "1920 × 1080" } });
+    fireEvent.change(screen.getByLabelText("Certificate validation"), { target: { value: "Reject invalid certificate" } });
+    expect(screen.getByLabelText("Screen size")).toHaveValue("1920 × 1080");
+    expect(screen.getByLabelText("Certificate validation")).toHaveValue("Reject invalid certificate");
     expect(screen.getByRole("switch", { name: "Fullscreen" })).toHaveAttribute("aria-checked", "false");
     expect(screen.getByRole("switch", { name: "Clipboard" })).toHaveAttribute("aria-checked", "true");
     expect(screen.getByRole("switch", { name: "Audio" })).toHaveAttribute("aria-checked", "false");
@@ -86,6 +98,8 @@ describe("ConnectionEditPage", () => {
 
     expect(screen.getByRole("heading", { name: "Metadata" })).not.toBeNull();
     expect(screen.getByLabelText("Tags")).toHaveValue("production, api, linux");
+    fireEvent.input(screen.getByLabelText("Tags"), { target: { value: "production, api, renamed" } });
+    expect(screen.getByLabelText("Tags")).toHaveValue("production, api, renamed");
     expect(screen.getByRole("switch", { name: "Sync this connection across devices" })).toHaveAttribute("aria-checked", "true");
     fireEvent.click(screen.getByRole("switch", { name: "Sync this connection across devices" }));
     expect(screen.getByRole("switch", { name: "Sync this connection across devices" })).toHaveAttribute("aria-checked", "false");

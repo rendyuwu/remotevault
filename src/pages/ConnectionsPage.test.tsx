@@ -65,7 +65,7 @@ describe("ConnectionsPage", () => {
     expect(document.querySelector(".rise.rise-3")).not.toBeNull();
   });
 
-  it("filters connections by protocol", () => {
+  it("filters connections by protocol and search query", () => {
     renderConnections();
 
     const filters = screen.getByLabelText("Connection filters");
@@ -75,6 +75,21 @@ describe("ConnectionsPage", () => {
     expect(screen.getByText("Production Windows Server")).not.toBeNull();
     expect(screen.getByText("Staging Windows")).not.toBeNull();
     expect(screen.queryByText("Production API Server")).toBeNull();
+
+    fireEvent.input(screen.getByPlaceholderText("Search connections..."), { target: { value: "staging" } });
+
+    expect(screen.getByText("Staging Windows")).not.toBeNull();
+    expect(screen.queryByText("Production Windows Server")).toBeNull();
+  });
+
+  it("links edit selected to selected connection", () => {
+    renderConnections();
+    const grid = document.querySelector(".pill-grid")!;
+    const worker = within(grid as HTMLElement).getByText("Production Worker").closest('[role="button"]')!;
+
+    fireEvent.click(worker);
+
+    expect(screen.getByRole("link", { name: "Edit selected" })).toHaveAttribute("href", "/connection-edit?id=prod-worker");
   });
 
   it("selects on single-click and navigates to session on double-click", async () => {

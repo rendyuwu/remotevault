@@ -37,6 +37,15 @@ export function ConnectionEditPage() {
   const [sshVaultId, setSshVaultId] = createSignal("prod-ssh-key");
   const [passphraseVaultId, setPassphraseVaultId] = createSignal("ssh-passphrase");
   const [rdpVaultId, setRdpVaultId] = createSignal("windows-admin-password");
+  const [name, setName] = createSignal("Production API Server");
+  const [host, setHost] = createSignal("10.0.0.10");
+  const [port, setPort] = createSignal("22");
+  const [username, setUsername] = createSignal("ubuntu");
+  const [folder, setFolder] = createSignal("Production");
+  const [domain, setDomain] = createSignal("PROD");
+  const [screenSize, setScreenSize] = createSignal("Auto (match window)");
+  const [certificateMode, setCertificateMode] = createSignal("Warn on invalid certificate");
+  const [tags, setTags] = createSignal("production, api, linux");
   const [syncEnabled, setSyncEnabled] = createSignal(true);
   const [fullscreen, setFullscreen] = createSignal(false);
   const [clipboard, setClipboard] = createSignal(true);
@@ -65,7 +74,11 @@ export function ConnectionEditPage() {
                     role="radio"
                     aria-checked={protocol() === item.id}
                     class={`preset${protocol() === item.id ? " active" : ""}`}
-                    onClick={() => setProtocol(item.id)}
+                    onClick={() => {
+                      setProtocol(item.id);
+                      setPort(item.id === "ssh" ? "22" : "3389");
+                      setUsername(item.id === "ssh" ? "ubuntu" : "Administrator");
+                    }}
                   >
                     {item.label}
                   </button>
@@ -78,24 +91,24 @@ export function ConnectionEditPage() {
             <h3 id="basic-fields-title">Basic details</h3>
             <div class="form-grid">
               <FormField label="Name" id="connection-name" required>
-                {(field) => <input class="input" id={field.id} type="text" value="Production API Server" />}
+                {(field) => <input class="input" id={field.id} type="text" value={name()} onInput={(e) => setName(e.currentTarget.value)} />}
               </FormField>
 
               <div class="field-row">
                 <FormField label="Host" id="connection-host" required>
-                  {(field) => <input class="input mono" id={field.id} type="text" value="10.0.0.10" />}
+                  {(field) => <input class="input mono" id={field.id} type="text" value={host()} onInput={(e) => setHost(e.currentTarget.value)} />}
                 </FormField>
                 <FormField label="Port" id="connection-port" required>
-                  {(field) => <input class="input mono" id={field.id} type="text" value={protocol() === "ssh" ? "22" : "3389"} />}
+                  {(field) => <input class="input mono" id={field.id} type="text" value={port()} onInput={(e) => setPort(e.currentTarget.value)} />}
                 </FormField>
               </div>
 
               <div class="field-row">
                 <FormField label="Username" id="connection-username" required>
-                  {(field) => <input class="input mono" id={field.id} type="text" value={protocol() === "ssh" ? "ubuntu" : "Administrator"} />}
+                  {(field) => <input class="input mono" id={field.id} type="text" value={username()} onInput={(e) => setUsername(e.currentTarget.value)} />}
                 </FormField>
                 <FormField label="Folder" id="connection-folder">
-                  {(field) => <input class="input" id={field.id} type="text" value="Production" />}
+                  {(field) => <input class="input" id={field.id} type="text" value={folder()} onInput={(e) => setFolder(e.currentTarget.value)} />}
                 </FormField>
               </div>
             </div>
@@ -143,11 +156,11 @@ export function ConnectionEditPage() {
               <div class="form-grid">
                 <div class="field-row">
                   <FormField label="Domain" id="rdp-domain">
-                    {(field) => <input class="input mono" id={field.id} type="text" value="PROD" />}
+                    {(field) => <input class="input mono" id={field.id} type="text" value={domain()} onInput={(e) => setDomain(e.currentTarget.value)} />}
                   </FormField>
                   <FormField label="Screen size" id="rdp-screen-size">
                     {(field) => (
-                      <select class="select" id={field.id} value="Auto (match window)">
+                      <select class="select" id={field.id} value={screenSize()} onChange={(e) => setScreenSize(e.currentTarget.value)}>
                         <option>Auto (match window)</option>
                         <option>1920 × 1080</option>
                         <option>1680 × 1050</option>
@@ -162,7 +175,7 @@ export function ConnectionEditPage() {
                 <div class="field-row">
                   <FormField label="Certificate validation" id="rdp-certificate-validation">
                     {(field) => (
-                      <select class="select" id={field.id} value="Warn on invalid certificate">
+                      <select class="select" id={field.id} value={certificateMode()} onChange={(e) => setCertificateMode(e.currentTarget.value)}>
                         <option>Warn on invalid certificate</option>
                         <option>Reject invalid certificate</option>
                         <option>Ignore certificate errors</option>
@@ -195,7 +208,7 @@ export function ConnectionEditPage() {
             <h3 id="metadata-title">Metadata</h3>
             <div class="form-grid">
               <FormField label="Tags" id="connection-tags">
-                {(field) => <input class="input" id={field.id} type="text" value="production, api, linux" />}
+                {(field) => <input class="input" id={field.id} type="text" value={tags()} onInput={(e) => setTags(e.currentTarget.value)} />}
               </FormField>
 
               <div class="field">

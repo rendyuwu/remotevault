@@ -53,6 +53,7 @@ const blankConnection = (): ConnectionItem => ({
 export function ConnectionsPage() {
   const navigate = useNavigate();
   const [activeFilter, setActiveFilter] = createSignal<Filter>("All");
+  const [searchQuery, setSearchQuery] = createSignal("");
   const [selectedId, setSelectedId] = createSignal(CONNECTIONS[0].id);
   const [editingConnection, setEditingConnection] = createSignal<ConnectionItem>();
   const [draft, setDraft] = createSignal<ConnectionItem>(blankConnection());
@@ -62,7 +63,12 @@ export function ConnectionsPage() {
 
   const visibleConnections = createMemo(() => {
     const filter = activeFilter();
-    return filter === "All" ? CONNECTIONS : CONNECTIONS.filter((item) => item.protocol === filter);
+    const query = searchQuery().trim().toLowerCase();
+    return CONNECTIONS.filter((item) => {
+      const matchesFilter = filter === "All" || item.protocol === filter;
+      const matchesSearch = !query || [item.name, item.host, item.folder, item.username].some((value) => value.toLowerCase().includes(query));
+      return matchesFilter && matchesSearch;
+    });
   });
 
   const openAddModal = () => {
@@ -81,6 +87,8 @@ export function ConnectionsPage() {
     setDraft((current) => ({ ...current, [key]: value }));
   };
 
+  const selectedEditHref = () => `/connection-edit?id=${selectedId()}`;
+
   const openConnection = (connection: ConnectionItem) => {
     if (connection.status === "conflict") {
       setSelectedId(connection.id);
@@ -98,10 +106,10 @@ export function ConnectionsPage() {
           <>
             <label class="search" aria-label="Search connections">
               <Icon name="i-search" size="xs" />
-              <input type="search" placeholder="Search connections..." />
+              <input type="search" placeholder="Search connections..." value={searchQuery()} onInput={(e) => setSearchQuery(e.currentTarget.value)} />
             </label>
             <Btn variant="primary" icon="i-plus" onClick={openAddModal}>New connection</Btn>
-            <A class="btn btn-secondary btn-sm" href="/connection-edit">Edit selected</A>
+            <A class="btn btn-secondary btn-sm" href={selectedEditHref()}>Edit selected</A>
           </>
         }
       />
