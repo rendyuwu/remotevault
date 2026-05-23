@@ -128,10 +128,7 @@ export function SessionPage() {
     <section class="session-workspace rise rise-1" aria-label="Remote session workspace">
       <div class="session-layout">
         <div class="session-tabs" aria-label="Session tabs">
-          <A href="/connections" class="session-back-tab">
-            <span aria-hidden="true">←</span>
-            <span>Connection</span>
-          </A>
+          <A href="/connections" class="session-back-tab">Connection</A>
           <SessionTabs tabs={sessions()} activeId={activeId()} onSelect={setActiveId} onClose={closeTab} />
         </div>
 

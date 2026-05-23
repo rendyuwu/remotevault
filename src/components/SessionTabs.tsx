@@ -19,10 +19,10 @@ interface SessionTabsProps {
 
 export function SessionTabs(props: SessionTabsProps) {
   return (
-    <div class="session-tabs" role="tablist">
+    <div class="session-tab-list" role="tablist">
       <For each={props.tabs}>
         {(tab) => (
-          <div class="session-tab-wrap" role="presentation">
+          <div class={`session-tab-wrap${tab.id === props.activeId ? " active" : ""}`} role="presentation">
             <button
               type="button"
               role="tab"
