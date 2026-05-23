@@ -307,6 +307,19 @@ code, kbd, pre, samp { font-family: var(--font-mono); }
   min-width: 0;
 }
 
+.workspace-stage {
+  display: flex;
+  min-height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+  background: var(--bg-app);
+}
+
+.workspace-stage > .session-workspace {
+  flex: 1;
+  min-width: 0;
+}
+
 .content-narrow {
   max-width: var(--content-narrow);
   margin: 0 auto;
