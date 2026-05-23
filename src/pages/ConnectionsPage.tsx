@@ -1,6 +1,7 @@
 import { For, createMemo, createSignal } from "solid-js";
-import { useNavigate } from "@solidjs/router";
+import { A, useNavigate } from "@solidjs/router";
 import { Btn } from "../components/Btn";
+import { ConflictModal } from "../components/ConflictModal";
 import { FilterChip } from "../components/FilterChip";
 import { FormField } from "../components/FormField";
 import { Icon } from "../components/Icon";
@@ -19,7 +20,7 @@ interface ConnectionItem {
   protocol: Protocol;
   host: string;
   folder: string;
-  status: "synced" | "conflict" | "local";
+  status: "synced" | "conflict" | "pending" | "local";
   port: string;
   username: string;
   useVault: boolean;
@@ -28,13 +29,13 @@ interface ConnectionItem {
 const FILTERS: Filter[] = ["All", "SSH", "RDP"];
 
 const CONNECTIONS: ConnectionItem[] = [
-  { id: "prod-api", name: "Production API Server", protocol: "SSH", host: "api.prod.remotevault.local", folder: "Production", status: "synced", port: "22", username: "deploy", useVault: true },
-  { id: "prod-worker", name: "Production Worker", protocol: "SSH", host: "worker.prod.remotevault.local", folder: "Production", status: "synced", port: "22", username: "deploy", useVault: true },
-  { id: "prod-db", name: "Production DB Bastion", protocol: "SSH", host: "bastion.prod.remotevault.local", folder: "Production", status: "conflict", port: "22", username: "dba", useVault: true },
-  { id: "prod-win", name: "Production Windows Server", protocol: "RDP", host: "win.prod.remotevault.local", folder: "Production", status: "synced", port: "3389", username: "Administrator", useVault: true },
-  { id: "staging-api", name: "Staging API", protocol: "SSH", host: "api.staging.remotevault.local", folder: "Staging", status: "local", port: "22", username: "deploy", useVault: false },
-  { id: "staging-win", name: "Staging Windows", protocol: "RDP", host: "win.staging.remotevault.local", folder: "Staging", status: "synced", port: "3389", username: "Administrator", useVault: true },
-  { id: "homelab-nas", name: "Homelab NAS", protocol: "SSH", host: "nas.home.arpa", folder: "Homelab", status: "synced", port: "22", username: "admin", useVault: false },
+  { id: "prod-api", name: "Production API Server", protocol: "SSH", host: "10.0.0.10", folder: "Production", status: "synced", port: "22", username: "ubuntu", useVault: true },
+  { id: "prod-worker", name: "Production Worker", protocol: "SSH", host: "10.0.0.11", folder: "Production", status: "synced", port: "22", username: "ubuntu", useVault: true },
+  { id: "prod-db", name: "Production DB Bastion", protocol: "SSH", host: "10.0.0.5", folder: "Production", status: "synced", port: "22", username: "ubuntu", useVault: true },
+  { id: "prod-win", name: "Production Windows Server", protocol: "RDP", host: "10.0.0.20", folder: "Production", status: "synced", port: "3389", username: "Administrator", useVault: true },
+  { id: "staging-api", name: "Staging API", protocol: "SSH", host: "staging.example.com", folder: "Staging", status: "conflict", port: "22", username: "deploy", useVault: true },
+  { id: "staging-win", name: "Staging Windows", protocol: "RDP", host: "staging-win.example.com", folder: "Staging", status: "pending", port: "3389", username: "Administrator", useVault: true },
+  { id: "homelab-nas", name: "Homelab NAS", protocol: "SSH", host: "192.168.1.50", folder: "Homelab", status: "local", port: "22", username: "admin", useVault: false },
 ];
 
 const blankConnection = (): ConnectionItem => ({
@@ -99,35 +100,32 @@ export function ConnectionsPage() {
               <input type="search" placeholder="Search connections..." />
             </label>
             <Btn variant="primary" icon="i-plus" onClick={openAddModal}>New connection</Btn>
+            <A class="btn btn-secondary btn-sm" href="/connection-edit">Edit selected</A>
           </>
         }
       />
 
-      <section class="folder-tree rise rise-1" aria-label="Connection folders">
-        <div class="topbar-crumbs" aria-label="Connection breadcrumb">
-          <span>Connections</span>
-          <span class="sep">/</span>
-          <span class="here">All connections</span>
+      <section class="folder-breadcrumb rise rise-1" aria-label="Connection breadcrumb">
+        <div class="breadcrumb-segment">
+          <span class="breadcrumb-label">All Connections</span>
+          <Icon name="i-chevron" size="2xs" />
+          <div class="breadcrumb-dropdown">
+            <div class="breadcrumb-option active">All Connections <span class="folder-count">7</span></div>
+            <div class="breadcrumb-option">Production <span class="folder-count">4</span></div>
+            <div class="breadcrumb-option">Staging <span class="folder-count">2</span></div>
+            <div class="breadcrumb-option">Homelab <span class="folder-count">1</span></div>
+          </div>
         </div>
-        <div class="folder-item active">
-          <Icon name="i-folder" size="xs" />
-          <span>All connections</span>
-          <span class="folder-count">7</span>
-        </div>
-        <div class="folder-item nested">
-          <Icon name="i-folder" size="xs" />
-          <span>Production</span>
-          <span class="folder-count">4</span>
-        </div>
-        <div class="folder-item nested">
-          <Icon name="i-folder" size="xs" />
-          <span>Staging</span>
-          <span class="folder-count">2</span>
-        </div>
-        <div class="folder-item nested">
-          <Icon name="i-folder" size="xs" />
-          <span>Homelab</span>
-          <span class="folder-count">1</span>
+        <span class="breadcrumb-sep">/</span>
+        <div class="breadcrumb-segment">
+          <span class="breadcrumb-label">Production</span>
+          <Icon name="i-chevron" size="2xs" />
+          <div class="breadcrumb-dropdown">
+            <div class="breadcrumb-option active">All <span class="folder-count">4</span></div>
+            <div class="breadcrumb-option">API Servers <span class="folder-count">2</span></div>
+            <div class="breadcrumb-option">Databases <span class="folder-count">1</span></div>
+            <div class="breadcrumb-option">Windows <span class="folder-count">1</span></div>
+          </div>
         </div>
       </section>
 
@@ -146,7 +144,7 @@ export function ConnectionsPage() {
               <Pill
                 icon={{ type: connection.protocol.toLowerCase(), svg: connection.protocol === "SSH" ? "i-terminal" : "i-server" }}
                 name={connection.name}
-                subtitle={`${connection.protocol} · ${connection.host}`}
+                subtitle={`${connection.host}:${connection.port}`}
                 status={connection.status}
                 active={selectedId() === connection.id}
                 onClick={() => setSelectedId(connection.id)}
@@ -207,33 +205,34 @@ export function ConnectionsPage() {
         </div>
       </Modal>
 
-      <ConnectionConflictModal open={conflictOpen()} onClose={() => setConflictOpen(false)} />
+      <ConflictModal
+        open={conflictOpen()}
+        onClose={() => setConflictOpen(false)}
+        label="Resolve Connection Conflict"
+        title="Resolve Connection Conflict"
+        copy={'"Staging API" connection settings changed on two devices. Review the host and username before choosing which connection to keep.'}
+        onKeepLocal={() => setConflictOpen(false)}
+        onKeepRemote={() => setConflictOpen(false)}
+        onKeepBoth={() => setConflictOpen(false)}
+        local={{
+          header: "Local connection",
+          fields: [
+            { label: "Host", value: "staging.example.com", changed: true },
+            { label: "Port", value: "2222", changed: true },
+            { label: "Username", value: "deploy" },
+            { label: "Updated", value: "2 hours ago" },
+          ],
+        }}
+        remote={{
+          header: "Remote connection",
+          fields: [
+            { label: "Host", value: "staging-new.example.com", changed: true },
+            { label: "Port", value: "22", changed: true },
+            { label: "Username", value: "deploy" },
+            { label: "Updated", value: "45 min ago" },
+          ],
+        }}
+      />
     </>
-  );
-}
-
-function ConnectionConflictModal(props: { open: boolean; onClose: () => void }) {
-  return (
-    <Modal open={props.open} onClose={props.onClose} class="conflict-modal" label="Resolve Connection Conflict">
-      <h3 class="card-title">Resolve Connection Conflict</h3>
-      <p class="conflict-copy">"Production DB Bastion" connection settings changed on two devices. Review the host and username before choosing which connection to keep.</p>
-      <div class="conflict-versions">
-        <div class="conflict-version">
-          <div class="conflict-version-header">Local connection</div>
-          <div class="cv-field"><div class="cv-label">Host</div><div class="cv-value cv-changed">bastion.prod.remotevault.local</div></div>
-          <div class="cv-field"><div class="cv-label">Username</div><div class="cv-value">dba</div></div>
-        </div>
-        <div class="conflict-version">
-          <div class="conflict-version-header">Remote connection</div>
-          <div class="cv-field"><div class="cv-label">Host</div><div class="cv-value cv-changed">db-bastion.prod.remotevault.local</div></div>
-          <div class="cv-field"><div class="cv-label">Username</div><div class="cv-value">deploy</div></div>
-        </div>
-      </div>
-      <div class="conflict-actions">
-        <Btn variant="ghost" onClick={props.onClose}>Keep Local</Btn>
-        <Btn variant="ghost" onClick={props.onClose}>Keep Remote</Btn>
-        <Btn variant="primary" onClick={props.onClose}>Keep Both</Btn>
-      </div>
-    </Modal>
   );
 }

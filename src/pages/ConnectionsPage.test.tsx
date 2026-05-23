@@ -42,10 +42,11 @@ describe("ConnectionsPage", () => {
     expect(screen.getByLabelText("Search connections")).not.toBeNull();
     expect(screen.getByRole("button", { name: /New connection/ })).not.toBeNull();
 
-    expect(screen.getByLabelText("Connection breadcrumb")).toHaveTextContent("Connections/All connections");
-    const folders = screen.getByLabelText("Connection folders");
-    ["All connections", "Production", "Staging", "Homelab"].forEach((label) => {
-      expect(within(folders).getAllByText(label).length).toBeGreaterThan(0);
+    const breadcrumb = screen.getByLabelText("Connection breadcrumb");
+    expect(within(breadcrumb).getAllByText("All Connections").length).toBeGreaterThan(0);
+    expect(within(breadcrumb).getAllByText("Production").length).toBeGreaterThan(0);
+    ["All Connections", "Production", "Staging", "Homelab", "API Servers", "Databases", "Windows"].forEach((label) => {
+      expect(within(breadcrumb).getAllByText(new RegExp(label)).length).toBeGreaterThan(0);
     });
 
     const filters = screen.getByLabelText("Connection filters");
@@ -111,9 +112,9 @@ describe("ConnectionsPage", () => {
 
     expect(screen.getByRole("dialog", { name: "Edit Connection" })).not.toBeNull();
     expect(screen.getByLabelText("Name")).toHaveValue("Production API Server");
-    expect(screen.getByLabelText("Host")).toHaveValue("api.prod.remotevault.local");
+    expect(screen.getByLabelText("Host")).toHaveValue("10.0.0.10");
     expect(screen.getByLabelText("Port")).toHaveValue("22");
-    expect(screen.getByLabelText("Username")).toHaveValue("deploy");
+    expect(screen.getByLabelText("Username")).toHaveValue("ubuntu");
     expect(screen.getByLabelText("Folder")).toHaveValue("Production");
     expect(screen.getByRole("button", { name: "Save changes" })).not.toBeNull();
   });
@@ -121,13 +122,14 @@ describe("ConnectionsPage", () => {
   it("shows connection-specific conflict text for conflict item", () => {
     renderConnections();
     const grid = document.querySelector(".pill-grid")!;
-    const conflict = within(grid as HTMLElement).getByText("Production DB Bastion").closest('[role="button"]')!;
+    const conflict = within(grid as HTMLElement).getByText("Staging API").closest('[role="button"]')!;
 
     fireEvent.dblClick(conflict);
 
     expect(screen.getByRole("dialog", { name: "Resolve Connection Conflict" })).not.toBeNull();
     expect(screen.getByText("Resolve Connection Conflict")).not.toBeNull();
     expect(screen.getByText(/connection settings changed on two devices/)).not.toBeNull();
+    expect(screen.getByText("staging-new.example.com")).not.toBeNull();
     expect(screen.getByText("Local connection")).not.toBeNull();
     expect(screen.getByText("Remote connection")).not.toBeNull();
   });

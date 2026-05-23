@@ -11,12 +11,12 @@ function TopbarHost() {
 
 function renderConnectionEdit() {
   const history = createMemoryHistory();
-  history.set({ value: "/connections/production-api/edit", replace: true, scroll: false });
+  history.set({ value: "/connection-edit", replace: true, scroll: false });
   render(() => (
     <TopbarProvider>
       <TopbarHost />
       <MemoryRouter history={history}>
-        <Route path="/connections/production-api/edit" component={ConnectionEditPage} />
+        <Route path="/connection-edit" component={ConnectionEditPage} />
         <Route path="/connections" component={() => <div>connections</div>} />
       </MemoryRouter>
     </TopbarProvider>
@@ -33,9 +33,9 @@ describe("ConnectionEditPage", () => {
     expect(screen.getByText("Connection Profile")).not.toBeNull();
     expect(screen.getByRole("heading", { name: "Production API Server" })).not.toBeNull();
     expect(screen.getByLabelText("Name")).toHaveValue("Production API Server");
-    expect(screen.getByLabelText("Host")).toHaveValue("api.prod.example.com");
+    expect(screen.getByLabelText("Host")).toHaveValue("10.0.0.10");
     expect(screen.getByLabelText("Port")).toHaveValue("22");
-    expect(screen.getByLabelText("Username")).toHaveValue("deploy");
+    expect(screen.getByLabelText("Username")).toHaveValue("ubuntu");
     expect(screen.getByLabelText("Folder")).toHaveValue("Production");
   });
 
@@ -74,8 +74,8 @@ describe("ConnectionEditPage", () => {
     expect(screen.getByLabelText("Port")).toHaveValue("3389");
     expect(screen.getByLabelText("Username")).toHaveValue("Administrator");
     expect(screen.getByLabelText("Domain")).toHaveValue("PROD");
-    expect(screen.getByLabelText("Screen size")).toHaveValue("1920x1080");
-    expect(screen.getByLabelText("Certificate validation")).toHaveValue("Warn on mismatch");
+    expect(screen.getByLabelText("Screen size")).toHaveValue("Auto (match window)");
+    expect(screen.getByLabelText("Certificate validation")).toHaveValue("Warn on invalid certificate");
     expect(screen.getByRole("switch", { name: "Fullscreen" })).toHaveAttribute("aria-checked", "false");
     expect(screen.getByRole("switch", { name: "Clipboard" })).toHaveAttribute("aria-checked", "true");
     expect(screen.getByRole("switch", { name: "Audio" })).toHaveAttribute("aria-checked", "false");
@@ -90,7 +90,7 @@ describe("ConnectionEditPage", () => {
     expect(screen.getByRole("switch", { name: "Sync this connection across devices" })).toHaveAttribute("aria-checked", "true");
     fireEvent.click(screen.getByRole("switch", { name: "Sync this connection across devices" }));
     expect(screen.getByRole("switch", { name: "Sync this connection across devices" })).toHaveAttribute("aria-checked", "false");
-    expect(screen.getByLabelText("Notes")).toHaveValue("Primary production API host. Requires approval before maintenance.");
+    expect(screen.getByLabelText("Notes")).toHaveValue("Main API server. Runs behind Cloudflare tunnel. Restart with systemctl restart api.");
     expect(screen.getByRole("link", { name: "Cancel" })).toHaveAttribute("href", "/connections");
     expect(screen.getByRole("button", { name: "Save connection" })).not.toBeNull();
     expect(screen.getByRole("button", { name: "Delete" })).not.toBeNull();

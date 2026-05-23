@@ -38,7 +38,7 @@ export function ConnectionEditPage() {
   const [clipboard, setClipboard] = createSignal(true);
   const [audio, setAudio] = createSignal(false);
   const [privateKey, setPrivateKey] = createSignal("~/.ssh/remotevault_prod_ed25519");
-  const [notes, setNotes] = createSignal("Primary production API host. Requires approval before maintenance.");
+  const [notes, setNotes] = createSignal("Main API server. Runs behind Cloudflare tunnel. Restart with systemctl restart api.");
 
   return (
     <>
@@ -51,7 +51,7 @@ export function ConnectionEditPage() {
           <p class="page-subtitle">Edit protocol, credentials, and sync metadata for this saved connection.</p>
         </header>
 
-        <div class="form-grid">
+        <div class="form-grid rise rise-3">
           <div class="field">
             <span class="label" id="protocol-label">Protocol</span>
             <div class="preset-row" role="radiogroup" aria-labelledby="protocol-label">
@@ -80,7 +80,7 @@ export function ConnectionEditPage() {
 
               <div class="field-row">
                 <FormField label="Host" id="connection-host" required>
-                  {(field) => <input class="input mono" id={field.id} type="text" value="api.prod.example.com" />}
+                  {(field) => <input class="input mono" id={field.id} type="text" value="10.0.0.10" />}
                 </FormField>
                 <FormField label="Port" id="connection-port" required>
                   {(field) => <input class="input mono" id={field.id} type="text" value={protocol() === "ssh" ? "22" : "3389"} />}
@@ -89,7 +89,7 @@ export function ConnectionEditPage() {
 
               <div class="field-row">
                 <FormField label="Username" id="connection-username" required>
-                  {(field) => <input class="input mono" id={field.id} type="text" value={protocol() === "ssh" ? "deploy" : "Administrator"} />}
+                  {(field) => <input class="input mono" id={field.id} type="text" value={protocol() === "ssh" ? "ubuntu" : "Administrator"} />}
                 </FormField>
                 <FormField label="Folder" id="connection-folder">
                   {(field) => <input class="input" id={field.id} type="text" value="Production" />}
@@ -148,10 +148,13 @@ export function ConnectionEditPage() {
                   </FormField>
                   <FormField label="Screen size" id="rdp-screen-size">
                     {(field) => (
-                      <select class="select" id={field.id} value="1920x1080">
-                        <option>1920x1080</option>
-                        <option>1440x900</option>
-                        <option>1280x720</option>
+                      <select class="select" id={field.id} value="Auto (match window)">
+                        <option>Auto (match window)</option>
+                        <option>1920 × 1080</option>
+                        <option>1680 × 1050</option>
+                        <option>1440 × 900</option>
+                        <option>1280 × 720</option>
+                        <option>Fullscreen</option>
                       </select>
                     )}
                   </FormField>
@@ -160,10 +163,10 @@ export function ConnectionEditPage() {
                 <div class="field-row">
                   <FormField label="Certificate validation" id="rdp-certificate-validation">
                     {(field) => (
-                      <select class="select" id={field.id} value="Warn on mismatch">
-                        <option>Warn on mismatch</option>
-                        <option>Require trusted certificate</option>
-                        <option>Allow self-signed</option>
+                      <select class="select" id={field.id} value="Warn on invalid certificate">
+                        <option>Warn on invalid certificate</option>
+                        <option>Reject invalid certificate</option>
+                        <option>Ignore certificate errors</option>
                       </select>
                     )}
                   </FormField>

@@ -89,14 +89,19 @@ const CONNECTED_OUTPUT = [
 ];
 
 export function SessionPage() {
+  const [sessions, setSessions] = createSignal(SESSIONS);
   const [activeId, setActiveId] = createSignal(SESSIONS[0].id);
   const [firstConnectOpen, setFirstConnectOpen] = createSignal(false);
   const [changedKeyOpen, setChangedKeyOpen] = createSignal(false);
-  const activeSession = createMemo(() => SESSIONS.find((item) => item.id === activeId()) ?? SESSIONS[0]);
+  const activeSession = createMemo(() => sessions().find((item) => item.id === activeId()) ?? sessions()[0] ?? SESSIONS[0]);
   const unavailable = createMemo(() => ["failed", "disconnected"].includes(activeSession().state));
 
   const closeTab = (id: string) => {
-    if (id === activeId()) setActiveId(SESSIONS[0].id);
+    setSessions((current) => {
+      const next = current.filter((item) => item.id !== id);
+      if (id === activeId()) setActiveId(next[0]?.id ?? SESSIONS[0].id);
+      return next.length ? next : current;
+    });
   };
 
   return (
@@ -104,7 +109,7 @@ export function SessionPage() {
       <TopbarTitle title="Sessions" />
 
       <section class="session-layout rise rise-1" aria-label="Remote session workspace">
-        <SessionTabs tabs={SESSIONS} activeId={activeId()} onSelect={setActiveId} onClose={closeTab} />
+        <SessionTabs tabs={sessions()} activeId={activeId()} onSelect={setActiveId} onClose={closeTab} />
 
         <div class="session-shell">
           <div class="session-terminal-wrap">
@@ -158,19 +163,22 @@ export function SessionPage() {
       <HostKeyModal
         open={firstConnectOpen()}
         label="First Connect Host Key"
-        title="Trust this host key?"
-        banner="This is the first time RemoteVault has seen api-prod.remotevault.dev. Verify the fingerprint before continuing."
+        title="Unknown host"
+        banner="This is the first time connecting to 10.0.0.10. Verify the host key fingerprint before trusting this server."
         variant="info"
-        primary="Trust and connect"
+        host="10.0.0.10:22"
+        fingerprint="SHA256:Nw3aB7cDeFgHiJkLmNoPqRsTuVwXyZ1234567890AbC"
+        primary="Trust & connect"
         onClose={() => setFirstConnectOpen(false)}
       />
       <HostKeyModal
         open={changedKeyOpen()}
         label="Host Key Changed"
-        title="Host key changed"
-        banner="The saved host key does not match this server. Continue only if the host was rebuilt or the key was rotated."
+        title="Host key has changed!"
+        banner="The host key for staging.example.com does not match the previously trusted key. This could indicate a man-in-the-middle attack or a server reinstall."
         variant="danger"
-        primary="Update saved key"
+        fingerprint="SHA256:xR4kAbCdEfGhIjKlMnOpQrStUvWxYz0123456789mPq"
+        previousFingerprint="SHA256:OlDkEyFiNgErPrInTtHaTwAsStOrEdBeFoRe99887766"
         onClose={() => setChangedKeyOpen(false)}
       />
     </>
@@ -202,7 +210,10 @@ function HostKeyModal(props: {
   title: string;
   banner: string;
   variant: "info" | "danger";
-  primary: string;
+  fingerprint: string;
+  previousFingerprint?: string;
+  host?: string;
+  primary?: string;
   onClose: () => void;
 }) {
   return (
@@ -212,14 +223,24 @@ function HostKeyModal(props: {
           <h2>{props.title}</h2>
           <p>SSH fingerprint verification protects against machine-in-the-middle attacks.</p>
         </header>
-        <Banner variant={props.variant} icon="i-shield" title={props.label}>{props.banner}</Banner>
+        <Banner variant={props.variant} icon="i-shield" title={props.title}>{props.banner}</Banner>
         <dl class="host-key-details">
-          <div><dt>Algorithm</dt><dd>ED25519</dd></div>
-          <div><dt>Fingerprint</dt><dd>SHA256:W6r7h3Jzv9Qp2n4xY8mK1bD0sA5eL6cT2uN9fG4qH1</dd></div>
+          {props.host && <div><dt>Host</dt><dd>{props.host}</dd></div>}
+          <div><dt>{props.previousFingerprint ? "New fingerprint" : "Fingerprint (ED25519)"}</dt><dd>{props.fingerprint}</dd></div>
+          {props.previousFingerprint && <div><dt>Previously trusted</dt><dd>{props.previousFingerprint}</dd></div>}
         </dl>
         <footer class="modal-actions">
-          <Btn variant="ghost" onClick={props.onClose}>Cancel</Btn>
-          <Btn variant="primary" onClick={props.onClose}>{props.primary}</Btn>
+          {props.previousFingerprint ? (
+            <>
+              <Btn variant="danger" onClick={props.onClose}>Reject & disconnect</Btn>
+              <Btn variant="secondary" onClick={props.onClose}>Trust new key</Btn>
+            </>
+          ) : (
+            <>
+              <Btn variant="ghost" onClick={props.onClose}>Cancel</Btn>
+              <Btn variant="primary" onClick={props.onClose}>{props.primary}</Btn>
+            </>
+          )}
         </footer>
       </div>
     </Modal>

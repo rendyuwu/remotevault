@@ -92,23 +92,31 @@ describe("SessionPage", () => {
     fireEvent.click(screen.getByRole("button", { name: "Demo first connect" }));
     const firstConnect = screen.getByRole("dialog", { name: "First Connect Host Key" });
     expect(firstConnect).not.toBeNull();
-    expect(within(firstConnect).getByText("Trust this host key?")).not.toBeNull();
-    expect(within(firstConnect).getByText(/first time RemoteVault has seen/)).not.toBeNull();
+    expect(within(firstConnect).getAllByText("Unknown host").length).toBeGreaterThan(0);
+    expect(within(firstConnect).getByText(/first time connecting to 10.0.0.10/)).not.toBeNull();
+    expect(within(firstConnect).getByText("10.0.0.10:22")).not.toBeNull();
+    expect(within(firstConnect).getByText(/SHA256:Nw3aB7/)).not.toBeNull();
     fireEvent.click(within(firstConnect).getByRole("button", { name: "Cancel" }));
     expect(document.querySelector(".modal-overlay.show")).toBeNull();
 
     fireEvent.click(screen.getByRole("button", { name: "Demo host key changed" }));
     const changedKey = screen.getByRole("dialog", { name: "Host Key Changed" });
     expect(changedKey).not.toBeNull();
-    expect(within(changedKey).getByText("Host key changed")).not.toBeNull();
-    expect(within(changedKey).getByText(/saved host key does not match/)).not.toBeNull();
-    fireEvent.click(within(changedKey).getByRole("button", { name: "Update saved key" }));
+    expect(within(changedKey).getAllByText("Host key has changed!").length).toBeGreaterThan(0);
+    expect(within(changedKey).getByText(/previously trusted key/)).not.toBeNull();
+    expect(within(changedKey).getByText("New fingerprint")).not.toBeNull();
+    expect(within(changedKey).getByText("Previously trusted")).not.toBeNull();
+    expect(within(changedKey).getByText(/SHA256:xR4k/)).not.toBeNull();
+    expect(within(changedKey).getByText(/SHA256:OlDkEy/)).not.toBeNull();
+    fireEvent.click(within(changedKey).getByRole("button", { name: "Reject & disconnect" }));
     expect(document.querySelector(".modal-overlay.show")).toBeNull();
   });
 
-  it("uses the session rise layout class", () => {
+  it("closes tabs and uses the session rise layout class", () => {
     renderSession();
 
+    fireEvent.click(screen.getByRole("button", { name: "Close Production Worker" }));
+    expect(screen.queryByRole("tab", { name: /Production Worker/ })).toBeNull();
     expect(screen.getByLabelText("Remote session workspace")).toHaveClass("session-layout", "rise", "rise-1");
   });
 });

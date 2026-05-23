@@ -21,13 +21,20 @@ interface ConflictModalProps {
   onKeepLocal: () => void;
   onKeepRemote: () => void;
   onKeepBoth?: () => void;
+  label?: string;
+  title?: string;
+  copy?: string;
 }
 
 export function ConflictModal(props: ConflictModalProps) {
+  const label = () => props.label ?? "Resolve Vault Conflict";
+  const title = () => props.title ?? "Resolve Vault Conflict";
+  const copy = () => props.copy ?? "\"SSH Key Passphrase\" was modified on two devices. For secrets, keeping both versions is the safer default.";
+
   return (
-    <Modal open={props.open} onClose={props.onClose} class="conflict-modal" label="Resolve Vault Conflict">
-      <h3 class="card-title">Resolve Vault Conflict</h3>
-      <p class="conflict-copy">"SSH Key Passphrase" was modified on two devices. For secrets, keeping both versions is the safer default.</p>
+    <Modal open={props.open} onClose={props.onClose} class="conflict-modal" label={label()}>
+      <h3 class="card-title">{title()}</h3>
+      <p class="conflict-copy">{copy()}</p>
       <div class="conflict-versions">
         <VersionColumn version={props.local} />
         <VersionColumn version={props.remote} />
