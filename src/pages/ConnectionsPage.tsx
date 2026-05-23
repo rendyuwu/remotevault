@@ -58,6 +58,7 @@ export function ConnectionsPage() {
   const [draft, setDraft] = createSignal<ConnectionItem>(blankConnection());
   const [modalOpen, setModalOpen] = createSignal(false);
   const [conflictOpen, setConflictOpen] = createSignal(false);
+  const [openCrumb, setOpenCrumb] = createSignal<"root" | "folder">();
 
   const visibleConnections = createMemo(() => {
     const filter = activeFilter();
@@ -106,27 +107,27 @@ export function ConnectionsPage() {
       />
 
       <section class="folder-breadcrumb rise rise-1" aria-label="Connection breadcrumb">
-        <div class="breadcrumb-segment">
+        <button type="button" class="breadcrumb-segment" aria-label="Open connection folder menu" aria-expanded={openCrumb() === "root"} onClick={() => setOpenCrumb(openCrumb() === "root" ? undefined : "root")}>
           <span class="breadcrumb-label">All Connections</span>
           <Icon name="i-chevron" size="2xs" />
-          <div class="breadcrumb-dropdown">
+          <div class={`breadcrumb-dropdown${openCrumb() === "root" ? " open" : ""}`}>
             <div class="breadcrumb-option active">All Connections <span class="folder-count">7</span></div>
             <div class="breadcrumb-option">Production <span class="folder-count">4</span></div>
             <div class="breadcrumb-option">Staging <span class="folder-count">2</span></div>
             <div class="breadcrumb-option">Homelab <span class="folder-count">1</span></div>
           </div>
-        </div>
+        </button>
         <span class="breadcrumb-sep">/</span>
-        <div class="breadcrumb-segment">
+        <button type="button" class="breadcrumb-segment" aria-label="Open production folder menu" aria-expanded={openCrumb() === "folder"} onClick={() => setOpenCrumb(openCrumb() === "folder" ? undefined : "folder")}>
           <span class="breadcrumb-label">Production</span>
           <Icon name="i-chevron" size="2xs" />
-          <div class="breadcrumb-dropdown">
+          <div class={`breadcrumb-dropdown${openCrumb() === "folder" ? " open" : ""}`}>
             <div class="breadcrumb-option active">All <span class="folder-count">4</span></div>
             <div class="breadcrumb-option">API Servers <span class="folder-count">2</span></div>
             <div class="breadcrumb-option">Databases <span class="folder-count">1</span></div>
             <div class="breadcrumb-option">Windows <span class="folder-count">1</span></div>
           </div>
-        </div>
+        </button>
       </section>
 
       <section class="vault-filter-bar rise rise-2" aria-label="Connection filters">

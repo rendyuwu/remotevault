@@ -43,9 +43,12 @@ describe("ConnectionsPage", () => {
     expect(screen.getByRole("button", { name: /New connection/ })).not.toBeNull();
 
     const breadcrumb = screen.getByLabelText("Connection breadcrumb");
-    expect(within(breadcrumb).getAllByText("All Connections").length).toBeGreaterThan(0);
-    expect(within(breadcrumb).getAllByText("Production").length).toBeGreaterThan(0);
-    ["All Connections", "Production", "Staging", "Homelab", "API Servers", "Databases", "Windows"].forEach((label) => {
+    expect(screen.getByRole("button", { name: "Open connection folder menu" })).toHaveAttribute("aria-expanded", "false");
+    expect(screen.getByRole("button", { name: "Open production folder menu" })).toHaveAttribute("aria-expanded", "false");
+    expect(document.querySelector(".breadcrumb-dropdown.open")).toBeNull();
+    fireEvent.click(screen.getByRole("button", { name: "Open connection folder menu" }));
+    expect(screen.getByRole("button", { name: "Open connection folder menu" })).toHaveAttribute("aria-expanded", "true");
+    ["All Connections", "Production", "Staging", "Homelab"].forEach((label) => {
       expect(within(breadcrumb).getAllByText(new RegExp(label)).length).toBeGreaterThan(0);
     });
 
