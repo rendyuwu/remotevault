@@ -20,19 +20,21 @@ interface ConflictModalProps {
   remote: ConflictVersion;
   onKeepLocal: () => void;
   onKeepRemote: () => void;
+  onKeepBoth?: () => void;
 }
 
 export function ConflictModal(props: ConflictModalProps) {
   return (
-    <Modal open={props.open} onClose={props.onClose} class="conflict-modal">
-      <h3 class="card-title">Sync Conflict</h3>
+    <Modal open={props.open} onClose={props.onClose} class="conflict-modal" label="Resolve Vault Conflict">
+      <h3 class="card-title">Resolve Vault Conflict</h3>
       <div class="conflict-versions">
         <VersionColumn version={props.local} />
         <VersionColumn version={props.remote} />
       </div>
       <div class="conflict-actions">
-        <Btn variant="secondary" onClick={() => props.onKeepLocal()}>Keep Local</Btn>
-        <Btn variant="primary" onClick={() => props.onKeepRemote()}>Keep Remote</Btn>
+        <Btn variant="ghost" onClick={() => props.onKeepLocal()}>Keep Local</Btn>
+        <Btn variant="ghost" onClick={() => props.onKeepRemote()}>Keep Remote</Btn>
+        <Btn variant="primary" onClick={() => (props.onKeepBoth ?? props.onKeepRemote)()}>Keep Both</Btn>
       </div>
     </Modal>
   );

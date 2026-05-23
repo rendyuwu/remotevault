@@ -1,7 +1,8 @@
-import { A } from "@solidjs/router";
+import { A, useNavigate } from "@solidjs/router";
 import { For, createMemo, createSignal } from "solid-js";
 import { Btn } from "../components/Btn";
 import { Chip } from "../components/Chip";
+import { ConflictModal } from "../components/ConflictModal";
 import { FilterChip } from "../components/FilterChip";
 import { FormField } from "../components/FormField";
 import { Icon } from "../components/Icon";
@@ -36,7 +37,7 @@ const SECRETS: SecretItem[] = [
   {
     id: "prod-rdp-password",
     name: "Production RDP Password",
-    subtitle: "administrator · 10.0.0.20",
+    subtitle: "password",
     type: "password",
     filter: "Passwords",
     status: "synced",
@@ -45,7 +46,7 @@ const SECRETS: SecretItem[] = [
   {
     id: "prod-ssh-key",
     name: "Production SSH Key (ed25519)",
-    subtitle: "prod-linux · ed25519",
+    subtitle: "private_key",
     type: "private-key",
     filter: "Private Keys",
     status: "synced",
@@ -54,7 +55,7 @@ const SECRETS: SecretItem[] = [
   {
     id: "ssh-passphrase",
     name: "SSH Key Passphrase",
-    subtitle: "production key · needs review",
+    subtitle: "passphrase",
     type: "passphrase",
     filter: "Passphrases",
     status: "conflict",
@@ -63,7 +64,7 @@ const SECRETS: SecretItem[] = [
   {
     id: "staging-token",
     name: "Staging API Token",
-    subtitle: "deploy bot · local only",
+    subtitle: "generic",
     type: "generic",
     filter: "Generic",
     status: "local",
@@ -72,9 +73,11 @@ const SECRETS: SecretItem[] = [
 ];
 
 export function VaultPage() {
+  const navigate = useNavigate();
   const [activeFilter, setActiveFilter] = createSignal<Filter>("All");
   const [selectedId, setSelectedId] = createSignal(SECRETS[0].id);
   const [modalOpen, setModalOpen] = createSignal(false);
+  const [conflictOpen, setConflictOpen] = createSignal(false);
   const [selectedType, setSelectedType] = createSignal<SecretType>("password");
 
   const visibleSecrets = createMemo(() => {
@@ -127,7 +130,8 @@ export function VaultPage() {
                 status={secret.status}
                 active={selectedId() === secret.id}
                 onClick={() => setSelectedId(secret.id)}
-                onDblClick={() => setModalOpen(true)}
+                onDblClick={() => secret.status === "conflict" ? setConflictOpen(true) : navigate("/vault-edit")}
+                onEdit={() => secret.status === "conflict" ? setConflictOpen(true) : navigate("/vault-edit")}
               />
             )}
           </For>
@@ -163,16 +167,16 @@ export function VaultPage() {
 
           <div class="form-grid">
             <FormField label="Name" required>
-              {(field) => <input id={field.id} class="input" value="Production SSH Key (ed25519)" />}
+              {(field) => <input id={field.id} class="input" placeholder="e.g. Production RDP Password" />}
             </FormField>
             <FormField label="Secret value" required>
-              {(field) => <textarea id={field.id} class="textarea mono" rows="4">••••••••••••••••••••••••</textarea>}
+              {(field) => <textarea id={field.id} class="textarea mono" rows="3" placeholder="Enter secret value..." />}
             </FormField>
             <FormField label="Tags">
-              {(field) => <input id={field.id} class="input" value="production, ssh, ed25519" />}
+              {(field) => <input id={field.id} class="input" placeholder="production, ssh, linux" />}
             </FormField>
             <FormField label="Notes">
-              {(field) => <textarea id={field.id} class="textarea" rows="3">Rotated quarterly. Used by production hosts.</textarea>}
+              {(field) => <textarea id={field.id} class="textarea" rows="2" placeholder="Optional notes about this secret..." />}
             </FormField>
           </div>
 
@@ -182,6 +186,30 @@ export function VaultPage() {
           </footer>
         </div>
       </Modal>
+
+      <ConflictModal
+        open={conflictOpen()}
+        onClose={() => setConflictOpen(false)}
+        onKeepLocal={() => setConflictOpen(false)}
+        onKeepRemote={() => setConflictOpen(false)}
+        onKeepBoth={() => setConflictOpen(false)}
+        local={{
+          header: "Local (MacBook Pro)",
+          fields: [
+            { label: "Name", value: "SSH Key Passphrase" },
+            { label: "Value", value: "••••••••••••", changed: true },
+            { label: "Updated", value: "3 hours ago" },
+          ],
+        }}
+        remote={{
+          header: "Remote (Desktop)",
+          fields: [
+            { label: "Name", value: "SSH Key Passphrase" },
+            { label: "Value", value: "••••••••", changed: true },
+            { label: "Updated", value: "1 hour ago" },
+          ],
+        }}
+      />
     </>
   );
 }

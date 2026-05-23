@@ -23,8 +23,8 @@ const CONNECTIONS = [
 ];
 
 const SECRET_VALUE = `-----BEGIN OPENSSH PRIVATE KEY-----
-b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAA
-prod-ed25519-key-redacted
+b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAAAMwAAAAtzc2gtZW
+QyNTUxOQAAACBxR4k9mPqAbCdEfGhIjKlMnOpQrStUvWxYz0123456789AAAAKD...
 -----END OPENSSH PRIVATE KEY-----`;
 
 export function VaultEditPage() {

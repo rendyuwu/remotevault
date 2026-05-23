@@ -20,7 +20,16 @@ interface PillProps {
 
 export function Pill(props: PillProps): JSX.Element {
   return (
-    <button type="button" class={`pill${props.active ? " active" : ""}`} onClick={props.onClick} onDblClick={props.onDblClick}>
+    <div
+      role="button"
+      tabindex="0"
+      class={`pill${props.active ? " active" : ""}`}
+      onClick={props.onClick}
+      onDblClick={props.onDblClick}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") props.onClick?.();
+      }}
+    >
       <span class={`pill-icon ${props.icon.type}`}>
         {props.icon.svg ? <Icon name={props.icon.svg} size="xs" /> : (props.icon.label ?? props.icon.type.toUpperCase())}
       </span>
@@ -34,6 +43,6 @@ export function Pill(props: PillProps): JSX.Element {
           <Icon name="i-edit" size="xs" />
         </button>
       )}
-    </button>
+    </div>
   );
 }
