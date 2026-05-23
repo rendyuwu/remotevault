@@ -1,4 +1,4 @@
-import { render, screen } from "@solidjs/testing-library";
+import { fireEvent, render, screen } from "@solidjs/testing-library";
 import { MemoryRouter, Route, createMemoryHistory } from "@solidjs/router";
 import { describe, expect, it } from "vitest";
 import { WelcomePage } from "./WelcomePage";
@@ -23,6 +23,8 @@ describe("WelcomePage", () => {
     expect(screen.getByText("Sync with my own storage")).not.toBeNull();
     expect(screen.getByText("Local Folder, S3, R2, B2, MinIO")).not.toBeNull();
     expect(screen.getByRole("link", { name: /Continue/ })).toHaveAttribute("href", "/provider-setup");
+    fireEvent.click(screen.getByRole("button", { name: /Use locally only/ }));
+    expect(screen.getByRole("link", { name: /Continue/ })).toHaveAttribute("href", "/vault-create");
     expect(screen.getByRole("link", { name: "Read the security model" })).toHaveAttribute("href", "/security");
   });
 

@@ -9,6 +9,7 @@ function renderAppAt(path: string) {
   render(() => (
     <MemoryRouter root={App} history={history}>
       <Route path="/welcome" component={() => <div>welcome</div>} />
+      <Route path="/security" component={() => <div>security</div>} />
       <Route path="/connection-edit" component={() => <div>connection-edit</div>} />
       <Route path="/unknown" component={() => <div>unknown</div>} />
     </MemoryRouter>
@@ -33,6 +34,13 @@ describe("App shell", () => {
     renderAppAt("/welcome");
 
     expect(screen.getByText("welcome").parentElement).toHaveClass("center-stage");
+    expect(screen.queryByRole("link", { name: "Connections" })).toBeNull();
+  });
+
+  it("keeps security model in onboarding stage before launch", () => {
+    renderAppAt("/security");
+
+    expect(screen.getByText("security").parentElement).toHaveClass("center-stage");
     expect(screen.queryByRole("link", { name: "Connections" })).toBeNull();
   });
 });

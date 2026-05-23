@@ -27,4 +27,13 @@ describe("Sidebar", () => {
     expect(screen.getByRole("link", { name: "Vault" })).toHaveClass("active");
     expect(screen.getByRole("link", { name: "Connections" })).not.toHaveClass("active");
   });
+
+  it("keeps vault locked state after leaving locked route", () => {
+    localStorage.setItem("rv:vaultLocked", "1");
+    renderAt("/connections");
+
+    expect(screen.getByRole("link", { name: /Vault/ })).not.toHaveClass("active");
+    expect(screen.getByText("Locked")).not.toBeNull();
+    expect(screen.getByText("vault locked")).not.toBeNull();
+  });
 });

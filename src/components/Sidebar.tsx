@@ -18,7 +18,7 @@ const BOTTOM_ITEMS = [
 export function Sidebar() {
   const location = useLocation();
   const isActive = (paths: readonly string[]) => paths.some((path) => location.pathname === path);
-  const isLocked = () => location.pathname === "/vault-locked";
+  const isLocked = () => location.pathname === "/vault-locked" || localStorage.getItem("rv:vaultLocked") === "1";
 
   return (
     <aside class="sidebar">

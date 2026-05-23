@@ -1,5 +1,5 @@
 import { A } from "@solidjs/router";
-import { For } from "solid-js";
+import { For, createSignal } from "solid-js";
 import { Icon } from "../components/Icon";
 
 const localBenefits = [
@@ -30,6 +30,9 @@ function BenefitList(props: { items: string[] }) {
 }
 
 export function WelcomePage() {
+  const [setupMode, setSetupMode] = createSignal<"local" | "sync">("sync");
+  const continueHref = () => setupMode() === "local" ? "/vault-create" : "/provider-setup";
+
   return (
     <main class="stage stage-wide">
       <header class="welcome-hero rise rise-1">
@@ -51,27 +54,37 @@ export function WelcomePage() {
       </header>
 
       <section class="choice-grid rise rise-2" aria-label="Setup options">
-        <article class="choice">
+        <button
+          class={`choice${setupMode() === "local" ? " selected" : ""}`}
+          type="button"
+          aria-pressed={setupMode() === "local"}
+          onClick={() => setSetupMode("local")}
+        >
           <div class="choice-icon">
             <Icon name="i-laptop" size="sm" />
           </div>
           <h2>Use locally only</h2>
           <p>Everything stays on this device. No account, no servers, no cloud.</p>
           <BenefitList items={localBenefits} />
-        </article>
+        </button>
 
-        <article class="choice">
+        <button
+          class={`choice${setupMode() === "sync" ? " selected" : ""}`}
+          type="button"
+          aria-pressed={setupMode() === "sync"}
+          onClick={() => setSetupMode("sync")}
+        >
           <div class="choice-icon">
             <Icon name="i-cloud" size="sm" />
           </div>
           <h2>Sync with my own storage</h2>
           <p>Bring a folder, S3 bucket, or compatible storage. We never see your data.</p>
           <BenefitList items={syncBenefits} />
-        </article>
+        </button>
       </section>
 
       <div class="welcome-action-row rise rise-3">
-        <A class="btn btn-primary btn-lg" href="/provider-setup">
+        <A class="btn btn-primary btn-lg" href={continueHref()}>
           Continue
           <Icon name="i-arrow-right" size="xs" />
         </A>

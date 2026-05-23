@@ -34,7 +34,7 @@ function ShellContent(props: ParentProps) {
 
 export function App(props: ParentProps) {
   const location = useLocation();
-  const isOnboarding = () => ONBOARDING_ROUTES.includes(location.pathname);
+  const isOnboarding = () => ONBOARDING_ROUTES.includes(location.pathname) || (location.pathname === "/security" && !localStorage.getItem("rv:launched"));
 
   return (
     <TopbarProvider>

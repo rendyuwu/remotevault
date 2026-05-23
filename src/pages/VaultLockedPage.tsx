@@ -2,6 +2,7 @@ import { createSignal, Show } from "solid-js";
 import { Icon } from "../components/Icon";
 
 export function VaultLockedPage() {
+  localStorage.setItem("rv:vaultLocked", "1");
   const [showPassphrase, setShowPassphrase] = createSignal(false);
   const [showError, setShowError] = createSignal(false);
 
