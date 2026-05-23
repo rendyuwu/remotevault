@@ -635,6 +635,25 @@
 .vault-type-opt:hover,
 .vault-type-opt.active { border-color: var(--accent); background: var(--accent-faint); color: var(--text-primary); }
 .modal-actions { padding-top: var(--space-4); border-top: var(--hairline) solid var(--border-subtle); }
+.vault-editor-panel { max-width: var(--modal-wide); }
+.secret-field-wrap { position: relative; }
+.secret-field-wrap.hidden .textarea { color: transparent; text-shadow: 0 0 var(--space-2) var(--text-secondary); }
+.secret-field-wrap .textarea { padding-right: calc(var(--space-10) + var(--space-5)); }
+.secret-reveal { position: absolute; top: var(--space-3); right: var(--space-3); display: inline-flex; align-items: center; gap: var(--space-2); padding: var(--space-1) var(--space-3); border: var(--hairline) solid var(--border-strong); border-radius: var(--radius-sm); background: var(--bg-surface-2); color: var(--text-secondary); font-size: var(--fs-xs); }
+.tags-input { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2); min-height: var(--input-h); padding: var(--space-2) var(--space-3); border: var(--hairline) solid var(--border-input); border-radius: var(--radius-sm); background: var(--bg-input); }
+.tags-input input { flex: 1; min-width: var(--space-10); border: 0; outline: 0; background: transparent; }
+.tags-input .tag { gap: var(--space-1); }
+.tags-input .tag button { border: 0; background: transparent; color: inherit; }
+.linked-connections { margin-top: var(--space-5); padding: var(--space-5); border: var(--hairline) solid var(--border-subtle); border-radius: var(--radius-lg); background: var(--bg-surface); }
+.linked-header { display: flex; gap: var(--space-3); margin-bottom: var(--space-4); }
+.linked-header h2 { margin: 0 0 var(--space-1); font-size: var(--fs-md); }
+.linked-header p { margin: 0; color: var(--text-secondary); font-size: var(--fs-sm); }
+.linked-list { display: flex; flex-direction: column; gap: var(--space-3); }
+.linked-item { display: flex; align-items: center; gap: var(--space-3); padding-top: var(--space-3); border-top: var(--hairline) solid var(--border-subtle); }
+.linked-meta { display: flex; flex-direction: column; gap: var(--space-1); }
+.linked-meta span { color: var(--text-muted); font: var(--fs-xs)/var(--lh-base) var(--font-mono); letter-spacing: var(--tracking-mono); }
+.form-actions { display: flex; align-items: center; gap: var(--space-3); margin-top: var(--space-5); padding-top: var(--space-5); border-top: var(--hairline) solid var(--border-subtle); }
+.form-actions .btn-danger { margin-left: auto; }
 
 @media (max-width: 720px) {
   .choice-grid,
