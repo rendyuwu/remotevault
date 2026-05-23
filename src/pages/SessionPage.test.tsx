@@ -112,11 +112,15 @@ describe("SessionPage", () => {
     expect(document.querySelector(".modal-overlay.show")).toBeNull();
   });
 
-  it("closes tabs and uses the session rise layout class", () => {
+  it("closes tabs and preserves selection when final tab remains", () => {
     renderSession();
 
     fireEvent.click(screen.getByRole("button", { name: "Close Production Worker" }));
     expect(screen.queryByRole("tab", { name: /Production Worker/ })).toBeNull();
+    fireEvent.click(screen.getByRole("button", { name: "Close Production API" }));
+    expect(screen.getByRole("tab", { name: /Staging API/ })).toHaveAttribute("aria-selected", "true");
+    fireEvent.click(screen.getByRole("button", { name: "Close Staging API" }));
+    expect(screen.getByRole("tab", { name: /Staging API/ })).toHaveAttribute("aria-selected", "true");
     expect(screen.getByLabelText("Remote session workspace")).toHaveClass("session-layout", "rise", "rise-1");
   });
 });

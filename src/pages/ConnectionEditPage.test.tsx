@@ -53,9 +53,8 @@ describe("ConnectionEditPage", () => {
       expect(within(authGroup).getByRole("radio", { name: label })).toHaveAttribute("aria-checked", "true");
     });
 
-    expect(screen.getByLabelText("Private Key")).toHaveValue("~/.ssh/remotevault_prod_ed25519");
-    expect(screen.getByLabelText("Password")).toHaveValue("••••••••••••");
-    expect(screen.getByLabelText("SSH Agent")).toHaveValue("SSH_AUTH_SOCK");
+    expect(screen.getByLabelText("Private key from Vault")).not.toBeNull();
+    expect(screen.getByLabelText("Key passphrase from Vault")).not.toBeNull();
     expect(screen.getByText("Production SSH Key (ed25519)")).not.toBeNull();
     expect(screen.getByText("Staging SSH Key (rsa)")).not.toBeNull();
     expect(screen.getByText("SSH Key Passphrase")).not.toBeNull();

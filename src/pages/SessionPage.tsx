@@ -98,9 +98,10 @@ export function SessionPage() {
 
   const closeTab = (id: string) => {
     setSessions((current) => {
+      if (current.length === 1) return current;
       const next = current.filter((item) => item.id !== id);
-      if (id === activeId()) setActiveId(next[0]?.id ?? SESSIONS[0].id);
-      return next.length ? next : current;
+      if (id === activeId()) setActiveId(next[0].id);
+      return next;
     });
   };
 

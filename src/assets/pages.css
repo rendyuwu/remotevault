@@ -261,7 +261,7 @@
 .breadcrumb-segment { position: relative; display: flex; align-items: center; gap: var(--space-2); padding: var(--space-2) var(--space-3); border: var(--hairline) solid var(--border-subtle); border-radius: var(--radius-md); background: var(--bg-surface); color: var(--text-secondary); font-size: var(--fs-sm); }
 .breadcrumb-label { color: var(--text-primary); }
 .breadcrumb-sep { color: var(--text-muted); }
-.breadcrumb-dropdown { position: absolute; top: calc(100% + var(--space-1)); left: 0; z-index: var(--z-dropdown); min-width: calc(var(--settings-nav-w) + var(--space-6)); padding: var(--space-2); border: var(--hairline) solid var(--border-subtle); border-radius: var(--radius-md); background: var(--bg-surface); box-shadow: var(--shadow-md); }
+.breadcrumb-dropdown { position: absolute; top: calc(100% + var(--space-1)); left: 0; z-index: var(--z-dropdown); min-width: calc(var(--settings-nav-w) + var(--space-6)); padding: var(--space-2); border: var(--hairline) solid var(--border-subtle); border-radius: var(--radius-md); background: var(--bg-surface); box-shadow: var(--shadow-2); }
 .breadcrumb-option { display: flex; justify-content: space-between; gap: var(--space-4); padding: var(--space-2) var(--space-3); border-radius: var(--radius-sm); color: var(--text-secondary); }
 .breadcrumb-option.active { background: var(--bg-surface-2); color: var(--accent); }
 

@@ -18,9 +18,12 @@ const authModes: Array<{ id: AuthMode; label: string }> = [
   { id: "agent", label: "SSH Agent" },
 ];
 
-const sshVaultItems = [
+const sshKeyItems = [
   { id: "prod-ssh-key", name: "Production SSH Key (ed25519)", icon: "i-shield", type: "private_key" },
   { id: "staging-ssh-key", name: "Staging SSH Key (rsa)", icon: "i-shield", type: "private_key" },
+];
+
+const passphraseItems = [
   { id: "ssh-passphrase", name: "SSH Key Passphrase", icon: "i-lock", type: "passphrase" },
 ];
 
@@ -32,12 +35,12 @@ export function ConnectionEditPage() {
   const [protocol, setProtocol] = createSignal<Protocol>("ssh");
   const [authMode, setAuthMode] = createSignal<AuthMode>("private-key");
   const [sshVaultId, setSshVaultId] = createSignal("prod-ssh-key");
+  const [passphraseVaultId, setPassphraseVaultId] = createSignal("ssh-passphrase");
   const [rdpVaultId, setRdpVaultId] = createSignal("windows-admin-password");
   const [syncEnabled, setSyncEnabled] = createSignal(true);
   const [fullscreen, setFullscreen] = createSignal(false);
   const [clipboard, setClipboard] = createSignal(true);
   const [audio, setAudio] = createSignal(false);
-  const [privateKey, setPrivateKey] = createSignal("~/.ssh/remotevault_prod_ed25519");
   const [notes, setNotes] = createSignal("Main API server. Runs behind Cloudflare tunnel. Restart with systemctl restart api.");
 
   return (
@@ -121,19 +124,15 @@ export function ConnectionEditPage() {
                   </div>
                 </div>
 
-                <FormField label="Private Key" id="ssh-private-key">
-                  {(field) => <textarea class="textarea mono" id={field.id} rows="4" value={privateKey()} onInput={(e) => setPrivateKey(e.currentTarget.value)} />}
-                </FormField>
+                <div class="field" aria-label="Private key from Vault">
+                  <span class="label">Private key (from Vault)</span>
+                  <VaultPicker items={sshKeyItems} selectedId={sshVaultId()} onSelect={setSshVaultId} />
+                </div>
 
-                <FormField label="Password" id="ssh-password">
-                  {(field) => <input class="input mono" id={field.id} type="password" value="••••••••••••" />}
-                </FormField>
-
-                <FormField label="SSH Agent" id="ssh-agent">
-                  {(field) => <input class="input mono" id={field.id} type="text" value="SSH_AUTH_SOCK" />}
-                </FormField>
-
-                <VaultPicker items={sshVaultItems} selectedId={sshVaultId()} onSelect={setSshVaultId} />
+                <div class="field" aria-label="Key passphrase from Vault">
+                  <span class="label">Key passphrase (from Vault)</span>
+                  <VaultPicker items={passphraseItems} selectedId={passphraseVaultId()} onSelect={setPassphraseVaultId} />
+                </div>
               </div>
             </section>
           </Show>
