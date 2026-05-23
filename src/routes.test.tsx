@@ -1,6 +1,6 @@
 import { render, screen, waitFor } from "@solidjs/testing-library";
 import { MemoryRouter, createMemoryHistory } from "@solidjs/router";
-import { describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it } from "vitest";
 import { App } from "./App";
 import { routes } from "./routes";
 
@@ -16,6 +16,10 @@ function renderRoutesAt(path: string) {
 }
 
 describe("routes", () => {
+  beforeEach(() => {
+    localStorage.clear();
+  });
+
   it("redirects root to welcome before launch", async () => {
     const history = renderRoutesAt("/");
 
@@ -27,7 +31,7 @@ describe("routes", () => {
     localStorage.setItem("rv:launched", "1");
     const history = renderRoutesAt("/");
 
-    await waitFor(() => expect(screen.getByText("connections")).not.toBeNull());
+    await waitFor(() => expect(screen.getByText("Production API Server")).not.toBeNull());
     expect(history.get()).toBe("/connections");
   });
 
@@ -47,5 +51,24 @@ describe("routes", () => {
     renderRoutesAt("/vault-locked");
 
     expect(screen.getByText("Vault is locked")).not.toBeNull();
+  });
+
+  it("renders connections route", () => {
+    renderRoutesAt("/connections");
+
+    expect(screen.getByText("Production API Server")).not.toBeNull();
+  });
+
+  it("renders connection edit route", () => {
+    renderRoutesAt("/connection-edit");
+
+    expect(screen.getByText("Connection Profile")).not.toBeNull();
+  });
+
+  it("renders session route", () => {
+    renderRoutesAt("/session");
+
+    expect(screen.getByRole("tab", { name: /Production API/ })).not.toBeNull();
+    expect(screen.getByLabelText("Terminal output")).not.toBeNull();
   });
 });

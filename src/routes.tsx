@@ -1,5 +1,8 @@
 import { Route, Navigate } from "@solidjs/router";
+import { ConnectionEditPage } from "./pages/ConnectionEditPage";
+import { ConnectionsPage } from "./pages/ConnectionsPage";
 import { ProviderSetupPage } from "./pages/ProviderSetupPage";
+import { SessionPage } from "./pages/SessionPage";
 import { VaultCreatePage } from "./pages/VaultCreatePage";
 import { VaultLockedPage } from "./pages/VaultLockedPage";
 import { VaultPage } from "./pages/VaultPage";
@@ -24,9 +27,9 @@ export function routes() {
       <Route path="/vault-create" component={VaultCreatePage} />
       <Route path="/vault-locked" component={VaultLockedPage} />
       <Route path="/vault" component={VaultPage} />
-      <Route path="/connections" component={() => <Stub name="connections" />} />
-      <Route path="/connection-edit" component={() => <Stub name="connection-edit" />} />
-      <Route path="/session" component={() => <Stub name="session" />} />
+      <Route path="/connections" component={ConnectionsPage} />
+      <Route path="/connection-edit" component={ConnectionEditPage} />
+      <Route path="/session" component={SessionPage} />
       <Route path="/sync" component={() => <Stub name="sync" />} />
       <Route path="/devices" component={() => <Stub name="devices" />} />
       <Route path="/security" component={() => <Stub name="security" />} />

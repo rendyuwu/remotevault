@@ -1,0 +1,114 @@
+import { fireEvent, render, screen, within } from "@solidjs/testing-library";
+import { MemoryRouter, Route, createMemoryHistory } from "@solidjs/router";
+import { describe, expect, it } from "vitest";
+import { TopbarProvider, useTopbar } from "../components/TopbarContext";
+import { SessionPage } from "./SessionPage";
+
+function TopbarHost() {
+  const { topbar } = useTopbar();
+  return <header>{topbar()}</header>;
+}
+
+function renderSession() {
+  const history = createMemoryHistory();
+  history.set({ value: "/session", replace: true, scroll: false });
+  render(() => (
+    <TopbarProvider>
+      <TopbarHost />
+      <MemoryRouter history={history}>
+        <Route path="/session" component={SessionPage} />
+      </MemoryRouter>
+    </TopbarProvider>
+  ));
+}
+
+describe("SessionPage", () => {
+  it("renders topbar, tabs, terminal output, and status bar", () => {
+    renderSession();
+
+    expect(screen.getByText("Sessions")).not.toBeNull();
+    expect(screen.getByRole("tab", { name: /Production API/ })).toHaveAttribute("aria-selected", "true");
+    expect(screen.getByRole("tab", { name: /Production Worker/ })).toHaveAttribute("aria-selected", "false");
+    expect(screen.getByRole("tab", { name: /Staging API/ })).toHaveAttribute("aria-selected", "false");
+
+    const terminal = screen.getByLabelText("Terminal output");
+    expect(within(terminal).getByText(/Last login/)).not.toBeNull();
+    expect(within(terminal).getByText(/ubuntu@api-prod:~\$ systemctl status api-server/)).not.toBeNull();
+    expect(within(terminal).getByText(/api-server.service - Production API Server/)).not.toBeNull();
+    expect(within(terminal).getByText(/df -h \//)).not.toBeNull();
+    expect(within(terminal).getByLabelText("cursor block")).toHaveTextContent("█");
+
+    const status = screen.getByLabelText("Session status");
+    ["State", "Host", "User", "Latency", "Encoding", "Size"].forEach((label) => {
+      expect(within(status).getByText(label)).not.toBeNull();
+    });
+    expect(within(status).getByText("Connected")).not.toBeNull();
+    expect(within(status).getByText("api-prod.remotevault.dev")).not.toBeNull();
+    expect(within(status).getByText("ubuntu")).not.toBeNull();
+    expect(within(status).getByText("18ms")).not.toBeNull();
+    expect(within(status).getByText("UTF-8")).not.toBeNull();
+    expect(within(status).getByText("132x34")).not.toBeNull();
+  });
+
+  it("drives terminal and status from selected tabs", () => {
+    renderSession();
+
+    fireEvent.click(screen.getByRole("tab", { name: /Production Worker/ }));
+    expect(screen.getByRole("tab", { name: /Production Worker/ })).toHaveAttribute("aria-selected", "true");
+    expect(screen.getByText("Connecting to worker-prod.remotevault.dev:22 as ubuntu...")).not.toBeNull();
+    expect(screen.getByLabelText("Session status")).toHaveTextContent("Connecting");
+    expect(screen.getByLabelText("Session status")).toHaveTextContent("worker-prod.remotevault.dev");
+
+    fireEvent.click(screen.getByRole("tab", { name: /Production API/ }));
+    expect(screen.getByRole("tab", { name: /Production API/ })).toHaveAttribute("aria-selected", "true");
+    expect(screen.getByText(/api-server.service - Production API Server/)).not.toBeNull();
+  });
+
+  it("shows failed overlay and non-connected status for failed tab", () => {
+    renderSession();
+
+    fireEvent.click(screen.getByRole("tab", { name: /Staging API/ }));
+    expect(screen.getByRole("tab", { name: /Staging API/ })).toHaveAttribute("aria-selected", "true");
+    expect(screen.queryByText(/api-server.service - Production API Server/)).toBeNull();
+    expect(screen.queryByLabelText("cursor block")).toBeNull();
+
+    const alert = screen.getByRole("alert");
+    expect(within(alert).getByText("Connection lost")).not.toBeNull();
+    expect(within(alert).getByText("staging-api.remotevault.dev:22")).not.toBeNull();
+    expect(within(alert).getByText(/Connection timed out after 30s/)).not.toBeNull();
+    expect(within(alert).getByRole("button", { name: "Reconnect" })).not.toBeNull();
+    expect(within(alert).getByRole("button", { name: "Close tab" })).not.toBeNull();
+
+    const status = screen.getByLabelText("Session status");
+    expect(status).toHaveTextContent("Failed");
+    expect(status).toHaveTextContent("deploy");
+    expect(status).toHaveTextContent("timeout");
+    expect(status).not.toHaveTextContent("Connected");
+  });
+
+  it("opens and closes host key demo modals", () => {
+    renderSession();
+
+    fireEvent.click(screen.getByRole("button", { name: "Demo first connect" }));
+    const firstConnect = screen.getByRole("dialog", { name: "First Connect Host Key" });
+    expect(firstConnect).not.toBeNull();
+    expect(within(firstConnect).getByText("Trust this host key?")).not.toBeNull();
+    expect(within(firstConnect).getByText(/first time RemoteVault has seen/)).not.toBeNull();
+    fireEvent.click(within(firstConnect).getByRole("button", { name: "Cancel" }));
+    expect(document.querySelector(".modal-overlay.show")).toBeNull();
+
+    fireEvent.click(screen.getByRole("button", { name: "Demo host key changed" }));
+    const changedKey = screen.getByRole("dialog", { name: "Host Key Changed" });
+    expect(changedKey).not.toBeNull();
+    expect(within(changedKey).getByText("Host key changed")).not.toBeNull();
+    expect(within(changedKey).getByText(/saved host key does not match/)).not.toBeNull();
+    fireEvent.click(within(changedKey).getByRole("button", { name: "Update saved key" }));
+    expect(document.querySelector(".modal-overlay.show")).toBeNull();
+  });
+
+  it("uses the session rise layout class", () => {
+    renderSession();
+
+    expect(screen.getByLabelText("Remote session workspace")).toHaveClass("session-layout", "rise", "rise-1");
+  });
+});
