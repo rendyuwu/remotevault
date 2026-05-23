@@ -130,6 +130,12 @@
   --stage-wide: 720px;
   --content-narrow: 920px;
   --content-max: 1200px;
+  --pill-min-w: 240px;
+  --pill-h: 56px;
+  --pill-icon-size: 32px;
+  --pill-gap: var(--space-3);
+  --pill-pad-x: var(--space-4);
+  --pill-pad-y: var(--space-3);
   --ambient-accent-size: 1200px 600px;
   --ambient-info-size: 900px 500px;
 
