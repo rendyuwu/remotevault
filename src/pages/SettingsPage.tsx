@@ -84,7 +84,7 @@ export function SettingsPage() {
 
           <section class="settings-section" id="about">
             <h2 class="settings-section-title">About</h2>
-            <div class="about-info"><div><span>Version</span><strong>0.1.0-alpha</strong></div><div><span>Platform</span><strong>Tauri 2.x + Rust</strong></div><div><span>License</span><strong>MIT</strong></div><div><span>Source</span><strong>github.com/rendyuwu/remotevault</strong></div></div>
+            <div class="about-info"><div><span>Version</span><strong>0.1.0-alpha</strong></div><div><span>Platform</span><strong>Tauri 2.x + Rust</strong></div><div><span>License</span><strong>MIT</strong></div><div><span>Source</span><strong class="text-accent">github.com/rendyuwu/remotevault</strong></div></div>
           </section>
         </div>
       </div>

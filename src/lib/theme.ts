@@ -14,7 +14,7 @@ function isThemeMode(value: string | null): value is ThemeMode {
 
 export function getThemeMode(): ThemeMode {
   const stored = localStorage.getItem(STORAGE_KEY);
-  return isThemeMode(stored) ? stored : "system";
+  return isThemeMode(stored) ? stored : "dark";
 }
 
 export function resolvedTheme(mode = getThemeMode()): "light" | "dark" {

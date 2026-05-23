@@ -6,9 +6,9 @@ import { TopbarTitle } from "../components/Topbar";
 
 const CARDS = [
   ["i-lock", "Encrypted before sync", "success", ["Passwords and private keys", "Private key passphrases", "Generic secrets and notes", "Connection hostnames and usernames", "Connection notes and tags", "Vault item names and values", "Workspace key wrapped with KEK"]],
-  ["i-cloud", "Visible to storage provider", "warning", ["Workspace ID", "Device IDs", "Event IDs and timestamps", "Object paths and sizes", "KDF parameters", "Record kind in standard mode"]],
+  ["i-cloud", "Visible to storage provider", "warning", ["Workspace ID", "Device IDs", "Event IDs and timestamps", "Object paths and sizes", "KDF parameters (salt, cost)", "Record kind (in standard mode)"]],
   ["i-x", "Never sent to provider", "danger", ["Master passphrase", "Derived encryption keys", "Decrypted workspace key", "Plaintext secret values", "SSH/RDP session traffic"]],
-  ["i-key", "Crypto primitives", "info", ["KDF: Argon2id (64 MiB, 3 iter, 4 par)", "AEAD: XChaCha20-Poly1305", "Random nonce per operation", "Envelope encryption", "No custom cryptography"]],
+  ["i-key", "Crypto primitives", "info", ["KDF: Argon2id (64 MiB, 3 iter, 4 par)", "AEAD: XChaCha20-Poly1305", "Random nonce per operation", "Envelope encryption (key wrap)", "No custom cryptography"]],
 ] as const;
 
 const STATUS = [
@@ -51,7 +51,7 @@ export function SecurityPage() {
         </div>
         <div class="arch-connector"><span>↓</span><span>encrypted blobs only</span></div>
         <div class="arch-box">
-          <div class="arch-box-title">Storage Provider</div>
+          <div class="arch-box-title">Storage Provider (S3 / Local Folder / future)</div>
           <div class="arch-detail">Sees: ciphertext, event IDs, timestamps, device IDs</div>
           <div class="arch-detail danger">Cannot see: passwords, keys, hostnames, usernames, notes</div>
         </div>

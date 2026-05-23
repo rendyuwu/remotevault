@@ -30,14 +30,14 @@ describe("theme", () => {
     vi.restoreAllMocks();
   });
 
-  it("defaults to system and resolves from OS preference", () => {
-    mockMatchMedia(true);
+  it("defaults to dark", () => {
+    mockMatchMedia(false);
 
-    expect(getThemeMode()).toBe("system");
+    expect(getThemeMode()).toBe("dark");
     expect(resolvedTheme()).toBe("dark");
     applyTheme();
     expect(document.documentElement).toHaveAttribute("data-theme", "dark");
-    expect(document.documentElement).toHaveAttribute("data-theme-mode", "system");
+    expect(document.documentElement).toHaveAttribute("data-theme-mode", "dark");
   });
 
   it("persists explicit light and dark modes", () => {
@@ -54,6 +54,7 @@ describe("theme", () => {
 
   it("updates live while system mode tracks OS changes", () => {
     const dispatch = mockMatchMedia(false);
+    setThemeMode("system");
     const cleanup = initTheme();
 
     expect(document.documentElement).toHaveAttribute("data-theme", "light");
