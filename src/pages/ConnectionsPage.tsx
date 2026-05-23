@@ -94,7 +94,7 @@ export function ConnectionsPage() {
       setConflictOpen(true);
       return;
     }
-    navigate("/session");
+    navigate(`/session?connection=${connection.id}`);
   };
 
   return (

@@ -5,6 +5,7 @@ import { Sidebar } from "./components/Sidebar";
 import { TopbarProvider, useTopbar } from "./components/TopbarContext";
 
 const ONBOARDING_ROUTES = ["/welcome", "/provider-setup", "/vault-create"];
+const WORKSPACE_ROUTES = ["/session"];
 
 const TITLES: Record<string, string> = {
   "/connections": "Connections",
@@ -34,12 +35,15 @@ function ShellContent(props: ParentProps) {
 export function App(props: ParentProps) {
   const location = useLocation();
   const isOnboarding = () => ONBOARDING_ROUTES.includes(location.pathname) || (location.pathname === "/security" && !localStorage.getItem("rv:launched"));
+  const isWorkspace = () => WORKSPACE_ROUTES.includes(location.pathname);
 
   return (
     <TopbarProvider>
       <IconSprite />
       {isOnboarding() ? (
         <div class="center-stage">{props.children}</div>
+      ) : isWorkspace() ? (
+        <div class="workspace-stage">{props.children}</div>
       ) : (
         <div class="app">
           <Sidebar />

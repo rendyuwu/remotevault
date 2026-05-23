@@ -74,7 +74,7 @@ describe("ConnectionsPage", () => {
   });
 
   it("selects on single-click and navigates to session on double-click", async () => {
-    renderConnections();
+    const history = renderConnections();
     const grid = document.querySelector(".pill-grid")!;
     const worker = within(grid as HTMLElement).getByText("Production Worker").closest('[role="button"]')!;
 
@@ -82,7 +82,7 @@ describe("ConnectionsPage", () => {
     expect(worker).toHaveClass("active");
 
     fireEvent.dblClick(worker);
-    await waitFor(() => expect(screen.getByText("session")).not.toBeNull());
+    await waitFor(() => expect(history.get()).toBe("/session?connection=prod-worker"));
   });
 
   it("resets add modal draft when reopened", () => {

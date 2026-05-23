@@ -1,11 +1,11 @@
-import { For, Show, createMemo, createSignal } from "solid-js";
+import { For, Show, createEffect, createMemo, createSignal } from "solid-js";
+import { useSearchParams } from "@solidjs/router";
 import { Banner } from "../components/Banner";
 import { Btn } from "../components/Btn";
 import { Chip } from "../components/Chip";
 import { Icon } from "../components/Icon";
 import { Modal } from "../components/Modal";
 import { SessionTabs } from "../components/SessionTabs";
-import { TopbarTitle } from "../components/Topbar";
 
 type SessionState = "connected" | "connecting" | "failed" | "disconnected";
 
@@ -49,6 +49,18 @@ const SESSIONS: SessionItem[] = [
     size: "132x34",
   },
   {
+    id: "prod-win",
+    name: "Production Windows Server",
+    protocol: "rdp",
+    state: "connected",
+    host: "10.0.0.20",
+    port: "3389",
+    user: "Administrator",
+    latency: "11ms",
+    encoding: "RGB 32-bit",
+    size: "1600x900",
+  },
+  {
     id: "staging-api",
     name: "Staging API",
     protocol: "ssh",
@@ -89,12 +101,19 @@ const CONNECTED_OUTPUT = [
 ];
 
 export function SessionPage() {
+  const [searchParams] = useSearchParams();
   const [sessions, setSessions] = createSignal(SESSIONS);
   const [activeId, setActiveId] = createSignal(SESSIONS[0].id);
   const [firstConnectOpen, setFirstConnectOpen] = createSignal(false);
   const [changedKeyOpen, setChangedKeyOpen] = createSignal(false);
   const activeSession = createMemo(() => sessions().find((item) => item.id === activeId()) ?? sessions()[0] ?? SESSIONS[0]);
   const unavailable = createMemo(() => ["failed", "disconnected"].includes(activeSession().state));
+
+  createEffect(() => {
+    const connection = searchParams.connection;
+    const value = Array.isArray(connection) ? connection[0] : connection;
+    setActiveId(value || SESSIONS[0].id);
+  });
 
   const closeTab = (id: string) => {
     setSessions((current) => {
@@ -106,10 +125,8 @@ export function SessionPage() {
   };
 
   return (
-    <>
-      <TopbarTitle title="Sessions" />
-
-      <section class="session-layout rise rise-1" aria-label="Remote session workspace">
+    <section class="session-workspace rise rise-1" aria-label="Remote session workspace">
+      <div class="session-layout">
         <SessionTabs tabs={sessions()} activeId={activeId()} onSelect={setActiveId} onClose={closeTab} />
 
         <div class="session-shell">
@@ -159,7 +176,7 @@ export function SessionPage() {
             </div>
           </footer>
         </div>
-      </section>
+      </div>
 
       <HostKeyModal
         open={firstConnectOpen()}
@@ -182,7 +199,7 @@ export function SessionPage() {
         previousFingerprint="SHA256:OlDkEyFiNgErPrInTtHaTwAsStOrEdBeFoRe99887766"
         onClose={() => setChangedKeyOpen(false)}
       />
-    </>
+    </section>
   );
 }
 

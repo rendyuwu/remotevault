@@ -59,9 +59,11 @@ describe("routes", () => {
     expect(screen.getByText("Production API Server")).not.toBeNull();
   });
 
-  it("renders session route", () => {
+  it("renders session workspace route", () => {
     renderRoutesAt("/session");
 
+    expect(document.querySelector(".workspace-stage")).not.toBeNull();
+    expect(document.querySelector(".topbar")).toBeNull();
     expect(screen.getByRole("tab", { name: /Production API/ })).not.toBeNull();
     expect(screen.getByLabelText("Terminal output")).not.toBeNull();
   });

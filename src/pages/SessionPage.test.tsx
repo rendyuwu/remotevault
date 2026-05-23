@@ -9,9 +9,9 @@ function TopbarHost() {
   return <header>{topbar()}</header>;
 }
 
-function renderSession() {
+function renderSession(path = "/session") {
   const history = createMemoryHistory();
-  history.set({ value: "/session", replace: true, scroll: false });
+  history.set({ value: path, replace: true, scroll: false });
   render(() => (
     <TopbarProvider>
       <TopbarHost />
@@ -23,12 +23,12 @@ function renderSession() {
 }
 
 describe("SessionPage", () => {
-  it("renders topbar, tabs, terminal output, and status bar", () => {
+  it("renders tabs, terminal output, and status bar", () => {
     renderSession();
 
-    expect(screen.getByText("Sessions")).not.toBeNull();
     expect(screen.getByRole("tab", { name: /Production API/ })).toHaveAttribute("aria-selected", "true");
     expect(screen.getByRole("tab", { name: /Production Worker/ })).toHaveAttribute("aria-selected", "false");
+    expect(screen.getByRole("tab", { name: /Production Windows Server/ })).toHaveAttribute("aria-selected", "false");
     expect(screen.getByRole("tab", { name: /Staging API/ })).toHaveAttribute("aria-selected", "false");
 
     const terminal = screen.getByLabelText("Terminal output");
@@ -62,6 +62,14 @@ describe("SessionPage", () => {
     fireEvent.click(screen.getByRole("tab", { name: /Production API/ }));
     expect(screen.getByRole("tab", { name: /Production API/ })).toHaveAttribute("aria-selected", "true");
     expect(screen.getByText(/api-server.service - Production API Server/)).not.toBeNull();
+  });
+
+  it("honors connection query for initial tab", () => {
+    renderSession("/session?connection=prod-win");
+
+    expect(screen.getByRole("tab", { name: /Production Windows Server/ })).toHaveAttribute("aria-selected", "true");
+    expect(screen.getByLabelText("Session status")).toHaveTextContent("Connected");
+    expect(screen.getByLabelText("Session status")).toHaveTextContent("10.0.0.20");
   });
 
   it("shows failed overlay and non-connected status for failed tab", () => {
@@ -118,9 +126,11 @@ describe("SessionPage", () => {
     fireEvent.click(screen.getByRole("button", { name: "Close Production Worker" }));
     expect(screen.queryByRole("tab", { name: /Production Worker/ })).toBeNull();
     fireEvent.click(screen.getByRole("button", { name: "Close Production API" }));
+    expect(screen.getByRole("tab", { name: /Production Windows Server/ })).toHaveAttribute("aria-selected", "true");
+    fireEvent.click(screen.getByRole("button", { name: "Close Production Windows Server" }));
     expect(screen.getByRole("tab", { name: /Staging API/ })).toHaveAttribute("aria-selected", "true");
     fireEvent.click(screen.getByRole("button", { name: "Close Staging API" }));
     expect(screen.getByRole("tab", { name: /Staging API/ })).toHaveAttribute("aria-selected", "true");
-    expect(screen.getByLabelText("Remote session workspace")).toHaveClass("session-layout", "rise", "rise-1");
+    expect(screen.getByLabelText("Remote session workspace")).toHaveClass("session-workspace", "rise", "rise-1");
   });
 });
