@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor, within } from "@solidjs/testing-library";
+import { fireEvent, render, screen, within } from "@solidjs/testing-library";
 import { MemoryRouter, Route, createMemoryHistory } from "@solidjs/router";
 import { describe, expect, it } from "vitest";
 import { TopbarProvider, useTopbar } from "../components/TopbarContext";
@@ -71,8 +71,8 @@ describe("VaultPage", () => {
     expect(document.querySelector(".modal-overlay.show")).toBeNull();
   });
 
-  it("opens conflict modal for conflicted secret and edit route for normal secret", async () => {
-    const history = renderVault();
+  it("opens conflict modal for conflicted secret and prefilled edit modal for normal secret", () => {
+    renderVault();
 
     const grid = document.querySelector(".pill-grid")!;
     const conflictPill = within(grid as HTMLElement).getByText("SSH Key Passphrase").closest('[role="button"]')!;
@@ -85,6 +85,11 @@ describe("VaultPage", () => {
     fireEvent.click(screen.getByRole("button", { name: "Keep Local" }));
     const normalPill = within(grid as HTMLElement).getByText("Production RDP Password").closest('[role="button"]')!;
     fireEvent.click(within(normalPill as HTMLElement).getByRole("button", { name: "Edit" }));
-    await waitFor(() => expect(history.get()).toBe("/vault-edit"));
+    expect(screen.getByRole("dialog", { name: "Edit Secret" })).not.toBeNull();
+    expect(screen.getByLabelText("Name")).toHaveValue("Production RDP Password");
+    expect(screen.getByLabelText("Secret value")).toHaveTextContent("••••••••••••");
+    expect(screen.getByLabelText("Tags")).toHaveValue("production, rdp, windows");
+    expect(screen.getByLabelText("Notes")).toHaveTextContent("Administrator password for production Windows hosts.");
+    expect(screen.getByRole("button", { name: "Save changes" })).not.toBeNull();
   });
 });

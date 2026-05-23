@@ -1,4 +1,4 @@
-import { A, useNavigate } from "@solidjs/router";
+import { A } from "@solidjs/router";
 import { For, createMemo, createSignal } from "solid-js";
 import { Btn } from "../components/Btn";
 import { Chip } from "../components/Chip";
@@ -22,6 +22,9 @@ interface SecretItem {
   filter: Filter;
   status: "synced" | "conflict" | "local";
   icon: string;
+  value: string;
+  tags: string;
+  notes: string;
 }
 
 const FILTERS: Filter[] = ["All", "Passwords", "Private Keys", "Passphrases", "Generic"];
@@ -42,6 +45,9 @@ const SECRETS: SecretItem[] = [
     filter: "Passwords",
     status: "synced",
     icon: "i-key",
+    value: "••••••••••••",
+    tags: "production, rdp, windows",
+    notes: "Administrator password for production Windows hosts.",
   },
   {
     id: "prod-ssh-key",
@@ -51,6 +57,9 @@ const SECRETS: SecretItem[] = [
     filter: "Private Keys",
     status: "synced",
     icon: "i-shield",
+    value: "-----BEGIN OPENSSH PRIVATE KEY-----\n••••••••••••\n-----END OPENSSH PRIVATE KEY-----",
+    tags: "production, ssh, ed25519",
+    notes: "Generated 2026-01-15. Used for all production Linux servers. Rotated quarterly.",
   },
   {
     id: "ssh-passphrase",
@@ -60,6 +69,9 @@ const SECRETS: SecretItem[] = [
     filter: "Passphrases",
     status: "conflict",
     icon: "i-lock",
+    value: "••••••••••••",
+    tags: "production, ssh",
+    notes: "Passphrase conflict detected across devices.",
   },
   {
     id: "staging-token",
@@ -69,13 +81,16 @@ const SECRETS: SecretItem[] = [
     filter: "Generic",
     status: "local",
     icon: "i-bolt",
+    value: "rvlt_staging_••••••••",
+    tags: "staging, api, deploy",
+    notes: "Local-only deploy token for staging automation.",
   },
 ];
 
 export function VaultPage() {
-  const navigate = useNavigate();
   const [activeFilter, setActiveFilter] = createSignal<Filter>("All");
   const [selectedId, setSelectedId] = createSignal(SECRETS[0].id);
+  const [editingSecret, setEditingSecret] = createSignal<SecretItem>();
   const [modalOpen, setModalOpen] = createSignal(false);
   const [conflictOpen, setConflictOpen] = createSignal(false);
   const [selectedType, setSelectedType] = createSignal<SecretType>("password");
@@ -84,6 +99,18 @@ export function VaultPage() {
     const filter = activeFilter();
     return filter === "All" ? SECRETS : SECRETS.filter((secret) => secret.filter === filter);
   });
+
+  const openAddModal = () => {
+    setEditingSecret(undefined);
+    setSelectedType("password");
+    setModalOpen(true);
+  };
+
+  const openEditModal = (secret: SecretItem) => {
+    setEditingSecret(secret);
+    setSelectedType(secret.type);
+    setModalOpen(true);
+  };
 
   return (
     <>
@@ -95,7 +122,7 @@ export function VaultPage() {
               <Icon name="i-search" size="xs" />
               <input type="search" placeholder="Search vault items..." />
             </label>
-            <Btn variant="primary" icon="i-plus" onClick={() => setModalOpen(true)}>Add secret</Btn>
+            <Btn variant="primary" icon="i-plus" onClick={openAddModal}>Add secret</Btn>
           </>
         }
       />
@@ -130,8 +157,8 @@ export function VaultPage() {
                 status={secret.status}
                 active={selectedId() === secret.id}
                 onClick={() => setSelectedId(secret.id)}
-                onDblClick={() => secret.status === "conflict" ? setConflictOpen(true) : navigate("/vault-edit")}
-                onEdit={() => secret.status === "conflict" ? setConflictOpen(true) : navigate("/vault-edit")}
+                onDblClick={() => secret.status === "conflict" ? setConflictOpen(true) : openEditModal(secret)}
+                onEdit={() => secret.status === "conflict" ? setConflictOpen(true) : openEditModal(secret)}
               />
             )}
           </For>
@@ -142,11 +169,11 @@ export function VaultPage() {
         </footer>
       </section>
 
-      <Modal open={modalOpen()} onClose={() => setModalOpen(false)} label="Add Secret">
+      <Modal open={modalOpen()} onClose={() => setModalOpen(false)} label={editingSecret() ? "Edit Secret" : "Add Secret"}>
         <div class="modal-stack">
           <header>
-            <h2>Add Secret</h2>
-            <p>Store encrypted credentials in this workspace Vault.</p>
+            <h2>{editingSecret() ? "Edit Secret" : "Add Secret"}</h2>
+            <p>{editingSecret() ? "Update encrypted credentials in this workspace Vault." : "Store encrypted credentials in this workspace Vault."}</p>
           </header>
 
           <div class="vault-type-selector" role="group" aria-label="Secret type">
@@ -167,22 +194,22 @@ export function VaultPage() {
 
           <div class="form-grid">
             <FormField label="Name" required>
-              {(field) => <input id={field.id} class="input" placeholder="e.g. Production RDP Password" />}
+              {(field) => <input id={field.id} class="input" value={editingSecret()?.name ?? ""} placeholder="e.g. Production RDP Password" />}
             </FormField>
             <FormField label="Secret value" required>
-              {(field) => <textarea id={field.id} class="textarea mono" rows="3" placeholder="Enter secret value..." />}
+              {(field) => <textarea id={field.id} class="textarea mono" rows="3" placeholder="Enter secret value...">{editingSecret()?.value ?? ""}</textarea>}
             </FormField>
             <FormField label="Tags">
-              {(field) => <input id={field.id} class="input" placeholder="production, ssh, linux" />}
+              {(field) => <input id={field.id} class="input" value={editingSecret()?.tags ?? ""} placeholder="production, ssh, linux" />}
             </FormField>
             <FormField label="Notes">
-              {(field) => <textarea id={field.id} class="textarea" rows="2" placeholder="Optional notes about this secret..." />}
+              {(field) => <textarea id={field.id} class="textarea" rows="2" placeholder="Optional notes about this secret...">{editingSecret()?.notes ?? ""}</textarea>}
             </FormField>
           </div>
 
           <footer class="modal-actions">
             <Btn variant="ghost" onClick={() => setModalOpen(false)}>Cancel</Btn>
-            <Btn variant="primary" onClick={() => setModalOpen(false)}>Save secret</Btn>
+            <Btn variant="primary" onClick={() => setModalOpen(false)}>{editingSecret() ? "Save changes" : "Save secret"}</Btn>
           </footer>
         </div>
       </Modal>
