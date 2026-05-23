@@ -29,10 +29,10 @@ describe("App shell", () => {
     expect(screen.queryByRole("link", { name: "Connections" })).toBeNull();
   });
 
-  it("keeps security model in onboarding stage before launch", () => {
+  it("uses shell for security page before launch", () => {
     renderAppAt("/security");
 
-    expect(screen.getByText("security").parentElement).toHaveClass("center-stage");
-    expect(screen.queryByRole("link", { name: "Connections" })).toBeNull();
+    expect(screen.getByText("security").parentElement).toHaveClass("content");
+    expect(screen.getByRole("link", { name: "Connections" })).not.toBeNull();
   });
 });

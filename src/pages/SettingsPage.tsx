@@ -14,7 +14,6 @@ const THEME_OPTIONS: { mode: ThemeMode; label: string }[] = [
   { mode: "system", label: "System" },
 ];
 
-const NAV = ["Appearance", "Terminal", "Behavior", "Vault", "Backup", "About"];
 const FONTS = ["JetBrains Mono", "Fira Code", "Source Code Pro", "Cascadia Code", "Menlo", "Monaco"];
 
 export function SettingsPage() {
@@ -35,10 +34,6 @@ export function SettingsPage() {
       <TopbarTitle title="Settings" />
 
       <div class="settings-grid rise rise-1">
-        <nav class="settings-nav" aria-label="Settings sections">
-          <For each={NAV}>{(item, index) => <a class={`settings-nav-item${index() === 0 ? " active" : ""}`} href={`#${item.toLowerCase()}`}>{item}</a>}</For>
-        </nav>
-
         <div>
           <section class="settings-section" id="appearance">
             <h2 class="settings-section-title">Appearance</h2>
@@ -89,7 +84,7 @@ export function SettingsPage() {
 
           <section class="settings-section" id="about">
             <h2 class="settings-section-title">About</h2>
-            <div class="about-info"><div><span>Version</span><strong>0.1.0-alpha</strong></div><div><span>Platform</span><strong>Tauri 2.x + Rust</strong></div><div><span>License</span><strong>MIT</strong></div></div>
+            <div class="about-info"><div><span>Version</span><strong>0.1.0-alpha</strong></div><div><span>Platform</span><strong>Tauri 2.x + Rust</strong></div><div><span>License</span><strong>MIT</strong></div><div><span>Source</span><strong>github.com/rendyuwu/remotevault</strong></div></div>
           </section>
         </div>
       </div>

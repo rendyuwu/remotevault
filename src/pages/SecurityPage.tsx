@@ -45,7 +45,7 @@ export function SecurityPage() {
       <section class="arch-flow rise rise-2" aria-label="Architecture diagram">
         <div class="arch-box">
           <div class="arch-box-title">Your Device</div>
-          <div class="arch-step"><span>Passphrase</span><span>→</span><strong>Argon2id</strong><span>→</span><span>KEK</span><span>→</span><strong>Workspace Key</strong></div>
+          <div class="arch-step"><span>Passphrase</span><span>→</span><strong>Argon2id</strong><span>→</span><span>KEK</span><span>→</span><strong>Unwrap</strong><span>→</span><strong>Workspace Key</strong></div>
           <div class="arch-step"><span>Vault items, connections, events</span><span>→</span><strong>XChaCha20-Poly1305</strong></div>
           <div class="arch-detail">SSH/RDP sessions connect direct to target host.</div>
         </div>
@@ -70,7 +70,7 @@ export function SecurityPage() {
 
       <section class="rise rise-5">
         <Card title="Your Workspace Status">
-          <div class="setting-list"><For each={STATUS}>{([label, value]) => <div class="setting-row"><span class="text-sm text-secondary">{label}</span><Chip variant={label.includes("synced") ? "encrypted" : "mono"}>{value}</Chip></div>}</For></div>
+          <div class="status-list"><For each={STATUS}>{([label, value]) => <div class="status-row"><span>{label}</span><Chip variant={label.includes("synced") ? "encrypted" : "mono"}>{value}</Chip></div>}</For></div>
         </Card>
       </section>
 

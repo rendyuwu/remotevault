@@ -53,7 +53,7 @@
   --info-subtle:    rgba(124, 184, 255, 0.025);
   --info-border:    rgba(124, 184, 255, 0.25);
 
-  /* ─────────── Domain-specific tokens (per PRD §15) ─────────── */
+  /* ─────────── Domain-specific tokens ─────────── */
   --encrypted:        #a78bfa;     /* "encrypted" badge */
   --encrypted-dim:    rgba(167, 139, 250, 0.12);
   --encrypted-border: rgba(167, 139, 250, 0.25);
@@ -189,6 +189,10 @@
   --blur-sm: 6px;
   --blur-md: 8px;
   --surface-tint: rgba(255,255,255,0.015);
+  --preview-light-top: #ffffff;
+  --preview-light-bottom: #e5eadc;
+  --preview-dark-top: #1f2530;
+  --preview-dark-bottom: #0a0c10;
 
   /* ─────────── Motion ─────────── */
   --ease-out:    cubic-bezier(0.22, 1, 0.36, 1);

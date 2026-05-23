@@ -1,6 +1,5 @@
 import { A } from "@solidjs/router";
 import { For, createSignal } from "solid-js";
-import { Banner } from "../components/Banner";
 import { Btn } from "../components/Btn";
 import { Card } from "../components/Card";
 import { Chip } from "../components/Chip";
@@ -18,12 +17,22 @@ const PROVIDER = [
 ];
 
 const SETTINGS = [
-  ["Sync enabled", "Push and pull encrypted events automatically"],
-  ["Sync on app launch", "Pull remote events when app starts"],
-  ["Sync on app focus", "Pull remote events when window regains focus"],
-  ["Periodic polling", "Check for remote changes every 5 minutes"],
-  ["Sync Vault items", "Include encrypted Vault secrets in sync"],
-];
+  { key: "syncEnabled", title: "Sync enabled", hint: "Push and pull encrypted events automatically", initial: true },
+  { key: "syncOnLaunch", title: "Sync on app launch", hint: "Pull remote events when app starts", initial: true },
+  { key: "syncOnFocus", title: "Sync on app focus", hint: "Pull remote events when window regains focus", initial: true },
+  { key: "periodicPolling", title: "Periodic polling", hint: "Check for remote changes every 5 minutes", initial: true },
+  { key: "syncVaultItems", title: "Sync Vault items", hint: "Include encrypted Vault secrets in sync", initial: true },
+] as const;
+
+type SyncSettingKey = typeof SETTINGS[number]["key"];
+
+const initialSettings = Object.fromEntries(SETTINGS.map((item) => [item.key, item.initial])) as Record<SyncSettingKey, boolean>;
+
+const SYNC_SCOPE = [
+  ["i-lock", "Encrypted data", "Vault items, connection profiles, encrypted events, and wrapped workspace key", "encrypted"],
+  ["i-info", "Provider metadata", "Workspace ID, device IDs, event timestamps, object paths, and object sizes", "mono"],
+  ["i-x", "Never synced", "Master passphrase, decrypted keys, and SSH/RDP session traffic", "danger"],
+] as const;
 
 const EVENTS = [
   ["push", "Pushed", "2 events (connection update, vault item edit)", "3 min ago"],
@@ -33,7 +42,9 @@ const EVENTS = [
 ];
 
 export function SyncPage() {
-  const [syncEnabled, setSyncEnabled] = createSignal(true);
+  const [settings, setSettings] = createSignal(initialSettings);
+
+  const setToggle = (key: SyncSettingKey, value: boolean) => setSettings((current) => ({ ...current, [key]: value }));
 
   return (
     <>
@@ -68,13 +79,13 @@ export function SyncPage() {
         <Card title="Sync Settings">
           <div class="setting-list">
             <For each={SETTINGS}>
-              {([title, hint], index) => (
+              {(item) => (
                 <div class="setting-row">
                   <div>
-                    <div class="setting-title">{title}</div>
-                    <div class="hint">{hint}</div>
+                    <div class="setting-title">{item.title}</div>
+                    <div class="hint">{item.hint}</div>
                   </div>
-                  <Toggle on={index() === 0 ? syncEnabled() : true} onChange={(value) => index() === 0 && setSyncEnabled(value)} />
+                  <Toggle on={settings()[item.key]} onChange={(value) => setToggle(item.key, value)} />
                 </div>
               )}
             </For>
@@ -104,11 +115,20 @@ export function SyncPage() {
         </Card>
       </section>
 
-      <div class="mt-5 rise rise-6">
-        <Banner variant="accent" icon="i-shield" title="What is synced">
-          Vault items, connection profiles, and workspace keys are synced as encrypted blobs. Master passphrase and session traffic never sync.
-        </Banner>
-      </div>
+      <section class="mt-5 rise rise-6">
+        <Card title="What is synced">
+          <div class="setting-list">
+            <For each={SYNC_SCOPE}>
+              {([icon, title, desc, variant]) => (
+                <div class="setting-row">
+                  <div class="sync-scope-title"><Icon name={icon} /><div><div class="setting-title">{title}</div><div class="hint">{desc}</div></div></div>
+                  <Chip variant={variant}>{title}</Chip>
+                </div>
+              )}
+            </For>
+          </div>
+        </Card>
+      </section>
     </>
   );
 }
