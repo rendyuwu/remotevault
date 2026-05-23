@@ -614,8 +614,31 @@
 .nav-lock-chip { margin-left: auto; height: var(--toggle-h); font-size: var(--fs-2xs); }
 .status-dot-locked { background: var(--locked); }
 
+/* ═══════════════════════════════════════════════════════════
+   Vault pages
+   ═══════════════════════════════════════════════════════════ */
+
+.vault-status-bar,
+.vault-grid-footer,
+.modal-actions { display: flex; align-items: center; justify-content: space-between; gap: var(--space-4); }
+.vault-status-bar { margin-bottom: var(--space-5); padding: var(--space-4) var(--space-5); border: var(--hairline) solid var(--success-border); border-radius: var(--radius-lg); background: var(--success-dim); }
+.vault-status-bar strong { display: block; color: var(--success); font-size: var(--fs-sm); }
+.vault-status-bar span { color: var(--text-secondary); font-size: var(--fs-sm); }
+.vault-filter-bar { margin-bottom: var(--space-5); }
+.vault-filter-chips { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+.vault-grid-footer { margin-top: var(--space-4); color: var(--text-muted); font: var(--fs-xs)/var(--lh-base) var(--font-mono); letter-spacing: var(--tracking-mono); }
+.modal-stack { display: flex; flex-direction: column; gap: var(--space-5); }
+.modal-stack h2 { margin: 0 0 var(--space-2); font-size: var(--fs-lg); letter-spacing: var(--tracking-tight); }
+.modal-stack p { margin: 0; color: var(--text-secondary); font-size: var(--fs-sm); }
+.vault-type-selector { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--space-3); }
+.vault-type-opt { display: flex; flex-direction: column; align-items: center; gap: var(--space-2); padding: var(--space-4); border: var(--hairline) solid var(--border-subtle); border-radius: var(--radius-md); background: var(--bg-surface-2); color: var(--text-secondary); font-weight: var(--fw-medium); }
+.vault-type-opt:hover,
+.vault-type-opt.active { border-color: var(--accent); background: var(--accent-faint); color: var(--text-primary); }
+.modal-actions { padding-top: var(--space-4); border-top: var(--hairline) solid var(--border-subtle); }
+
 @media (max-width: 720px) {
   .choice-grid,
   .provider-grid,
-  .field-row { grid-template-columns: 1fr; }
+  .field-row,
+  .vault-type-selector { grid-template-columns: 1fr; }
 }
