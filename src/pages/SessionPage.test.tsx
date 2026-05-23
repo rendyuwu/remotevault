@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, within } from "@solidjs/testing-library";
+import { fireEvent, render, screen, waitFor, within } from "@solidjs/testing-library";
 import { MemoryRouter, Route, createMemoryHistory } from "@solidjs/router";
 import { describe, expect, it } from "vitest";
 import { TopbarProvider, useTopbar } from "../components/TopbarContext";
@@ -16,17 +16,20 @@ function renderSession(path = "/session") {
     <TopbarProvider>
       <TopbarHost />
       <MemoryRouter history={history}>
+        <Route path="/connections" component={() => <div>connections</div>} />
         <Route path="/session" component={SessionPage} />
       </MemoryRouter>
     </TopbarProvider>
   ));
+  return history;
 }
 
 describe("SessionPage", () => {
-  it("renders tabs, terminal output, and status bar", () => {
+  it("renders tabs, back link, terminal output, and status bar", () => {
     renderSession();
 
     expect(screen.getByRole("tab", { name: /Production API/ })).toHaveAttribute("aria-selected", "true");
+    expect(screen.getByRole("link", { name: "Connection" })).toHaveAttribute("href", "/connections");
     expect(screen.getByRole("tab", { name: /Production Worker/ })).toHaveAttribute("aria-selected", "false");
     expect(screen.getByRole("tab", { name: /Production Windows Server/ })).toHaveAttribute("aria-selected", "false");
     expect(screen.getByRole("tab", { name: /Staging API/ })).toHaveAttribute("aria-selected", "false");
@@ -118,6 +121,13 @@ describe("SessionPage", () => {
     expect(within(changedKey).getByText(/SHA256:OlDkEy/)).not.toBeNull();
     fireEvent.click(within(changedKey).getByRole("button", { name: "Reject & disconnect" }));
     expect(document.querySelector(".modal-overlay.show")).toBeNull();
+  });
+
+  it("navigates back to connections from session tab bar", async () => {
+    const history = renderSession();
+
+    fireEvent.click(screen.getByRole("link", { name: "Connection" }));
+    await waitFor(() => expect(history.get()).toBe("/connections"));
   });
 
   it("closes tabs and preserves selection when final tab remains", () => {

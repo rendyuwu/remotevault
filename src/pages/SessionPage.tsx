@@ -1,5 +1,5 @@
 import { For, Show, createEffect, createMemo, createSignal } from "solid-js";
-import { useSearchParams } from "@solidjs/router";
+import { A, useSearchParams } from "@solidjs/router";
 import { Banner } from "../components/Banner";
 import { Btn } from "../components/Btn";
 import { Chip } from "../components/Chip";
@@ -127,7 +127,13 @@ export function SessionPage() {
   return (
     <section class="session-workspace rise rise-1" aria-label="Remote session workspace">
       <div class="session-layout">
-        <SessionTabs tabs={sessions()} activeId={activeId()} onSelect={setActiveId} onClose={closeTab} />
+        <div class="session-tabs" aria-label="Session tabs">
+          <A href="/connections" class="session-back-tab">
+            <span aria-hidden="true">←</span>
+            <span>Connection</span>
+          </A>
+          <SessionTabs tabs={sessions()} activeId={activeId()} onSelect={setActiveId} onClose={closeTab} />
+        </div>
 
         <div class="session-shell">
           <div class="session-terminal-wrap">
