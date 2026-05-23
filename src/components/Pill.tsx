@@ -27,7 +27,10 @@ export function Pill(props: PillProps): JSX.Element {
       onClick={props.onClick}
       onDblClick={props.onDblClick}
       onKeyDown={(e) => {
-        if (e.key === "Enter" || e.key === " ") props.onClick?.();
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          props.onClick?.();
+        }
       }}
     >
       <span class={`pill-icon ${props.icon.type}`}>

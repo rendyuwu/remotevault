@@ -93,7 +93,7 @@ export function VaultPage() {
           <>
             <label class="search" aria-label="Search vault">
               <Icon name="i-search" size="xs" />
-              <input type="search" placeholder="Search secrets" />
+              <input type="search" placeholder="Search vault items..." />
             </label>
             <Btn variant="primary" icon="i-plus" onClick={() => setModalOpen(true)}>Add secret</Btn>
           </>

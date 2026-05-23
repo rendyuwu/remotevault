@@ -27,6 +27,7 @@ export function ConflictModal(props: ConflictModalProps) {
   return (
     <Modal open={props.open} onClose={props.onClose} class="conflict-modal" label="Resolve Vault Conflict">
       <h3 class="card-title">Resolve Vault Conflict</h3>
+      <p class="conflict-copy">"SSH Key Passphrase" was modified on two devices. For secrets, keeping both versions is the safer default.</p>
       <div class="conflict-versions">
         <VersionColumn version={props.local} />
         <VersionColumn version={props.remote} />

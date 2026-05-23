@@ -4,6 +4,8 @@
 
 .conflict-modal { max-width: var(--modal-wide); }
 
+.conflict-copy { margin: var(--space-3) 0; color: var(--text-secondary); font-size: var(--fs-sm); }
+
 .conflict-versions {
   display: grid;
   grid-template-columns: 1fr 1fr;
