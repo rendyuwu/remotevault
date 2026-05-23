@@ -2,6 +2,7 @@ import { createSignal, onMount, Show } from "solid-js";
 import { Icon } from "../components/Icon";
 
 export function VaultLockedPage() {
+  // TODO: clear rv:vaultLocked when real unlock succeeds.
   onMount(() => localStorage.setItem("rv:vaultLocked", "1"));
   const [showPassphrase, setShowPassphrase] = createSignal(false);
   const [showError, setShowError] = createSignal(false);
