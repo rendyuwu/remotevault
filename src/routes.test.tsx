@@ -31,14 +31,21 @@ describe("routes", () => {
     expect(history.get()).toBe("/connections");
   });
 
-  it("renders implemented task routes", () => {
+  it("renders provider setup route", () => {
     renderRoutesAt("/provider-setup");
+
     expect(screen.getByText("Step 2 of 3 — Choose storage")).not.toBeNull();
+  });
 
+  it("renders vault create route", () => {
     renderRoutesAt("/vault-create");
-    expect(screen.getByText("Create your Vault passphrase")).not.toBeNull();
 
+    expect(screen.getByText("Create your Vault passphrase")).not.toBeNull();
+  });
+
+  it("renders vault locked route", () => {
     renderRoutesAt("/vault-locked");
+
     expect(screen.getByText("Vault is locked")).not.toBeNull();
   });
 });

@@ -28,7 +28,7 @@ describe("VaultLockedPage", () => {
 
   it("shows error on submit and toggles passphrase visibility", () => {
     renderLockedShell();
-    const input = screen.getByPlaceholderText("Master passphrase...");
+    const input = screen.getByLabelText("Master passphrase");
 
     expect(screen.queryByText("Wrong passphrase. Vault remains locked.")).toBeNull();
     expect(input).toHaveAttribute("type", "password");

@@ -26,6 +26,7 @@ export function VaultLockedPage() {
             class="input"
             type={showPassphrase() ? "text" : "password"}
             placeholder="Master passphrase..."
+            aria-label="Master passphrase"
             autofocus
           />
           <button

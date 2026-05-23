@@ -19,6 +19,8 @@ describe("ProviderSetupPage", () => {
 
     expect(screen.getByText("Step 2 of 3 — Choose storage")).not.toBeNull();
     expect(screen.getByText("Where should encrypted data sync?")).not.toBeNull();
+    expect(screen.getByRole("heading", { name: "Local Folder" })).not.toBeNull();
+    expect(screen.getByText("Sync via a folder you already share with Syncthing, iCloud Drive, Dropbox, or rclone.").tagName).toBe("P");
     expect(screen.getByDisplayValue("/Users/simon/Sync/remotevault")).not.toBeNull();
     expect(screen.getByText("Browse")).not.toBeNull();
     expect(screen.getByText("Folder exists, writable, no existing workspace found. Ready to initialize.")).not.toBeNull();
