@@ -34,6 +34,15 @@ fn decrypt_rejects_tampered_ciphertext() {
 }
 
 #[test]
+fn decrypt_rejects_tampered_nonce() {
+    let key = generate_workspace_key().unwrap();
+    let mut sealed = encrypt(&key, b"super-secret-token").unwrap();
+    sealed.nonce[0] ^= 1;
+
+    assert_eq!(decrypt(&key, &sealed), Err(CryptoError::DecryptFailed));
+}
+
+#[test]
 fn encrypt_generates_distinct_nonces() {
     let key = generate_workspace_key().unwrap();
     let first = encrypt(&key, b"same-secret").unwrap();
@@ -95,8 +104,16 @@ fn derive_kek_changes_with_salt() {
 }
 
 #[test]
-fn derive_kek_rejects_weak_params() {
+fn derive_kek_rejects_invalid_params() {
     let salt = generate_salt().unwrap();
+    let mut params = default_kdf_params();
+    params.algorithm = "argon2i".to_string();
+
+    assert_eq!(
+        derive_kek("passphrase", &salt, &params),
+        Err(CryptoError::InvalidKdfParams)
+    );
+
     let mut params = default_kdf_params();
     params.memory_kib = DEFAULT_ARGON2_MEMORY_KIB - 1;
 
@@ -106,7 +123,39 @@ fn derive_kek_rejects_weak_params() {
     );
 
     let mut params = default_kdf_params();
+    params.memory_kib = MAX_ARGON2_MEMORY_KIB + 1;
+
+    assert_eq!(
+        derive_kek("passphrase", &salt, &params),
+        Err(CryptoError::InvalidKdfParams)
+    );
+
+    let mut params = default_kdf_params();
     params.iterations = DEFAULT_ARGON2_ITERATIONS - 1;
+
+    assert_eq!(
+        derive_kek("passphrase", &salt, &params),
+        Err(CryptoError::InvalidKdfParams)
+    );
+
+    let mut params = default_kdf_params();
+    params.iterations = MAX_ARGON2_ITERATIONS + 1;
+
+    assert_eq!(
+        derive_kek("passphrase", &salt, &params),
+        Err(CryptoError::InvalidKdfParams)
+    );
+
+    let mut params = default_kdf_params();
+    params.parallelism = 0;
+
+    assert_eq!(
+        derive_kek("passphrase", &salt, &params),
+        Err(CryptoError::InvalidKdfParams)
+    );
+
+    let mut params = default_kdf_params();
+    params.parallelism = MAX_ARGON2_PARALLELISM + 1;
 
     assert_eq!(
         derive_kek("passphrase", &salt, &params),
@@ -149,6 +198,25 @@ fn unwrap_workspace_key_rejects_wrong_passphrase() {
 
     assert_eq!(
         unwrap_workspace_key(&wrapped, "wrong passphrase"),
+        Err(CryptoError::DecryptFailed)
+    );
+}
+
+#[test]
+fn unwrap_workspace_key_rejects_malformed_key_length() {
+    let key = generate_workspace_key().unwrap();
+    let mut wrapped = wrap_workspace_key(&key, "correct horse battery staple").unwrap();
+    let kek = derive_kek(
+        "correct horse battery staple",
+        &wrapped.salt,
+        &wrapped.kdf,
+    )
+    .unwrap();
+
+    wrapped.encrypted_key = encrypt_bytes(kek.as_key(), b"too short").unwrap();
+
+    assert_eq!(
+        unwrap_workspace_key(&wrapped, "correct horse battery staple"),
         Err(CryptoError::DecryptFailed)
     );
 }

@@ -11,6 +11,9 @@ pub const SALT_LEN: usize = 16;
 pub const DEFAULT_ARGON2_MEMORY_KIB: u32 = 64 * 1024;
 pub const DEFAULT_ARGON2_ITERATIONS: u32 = 3;
 pub const DEFAULT_ARGON2_PARALLELISM: u32 = 1;
+pub const MAX_ARGON2_MEMORY_KIB: u32 = 256 * 1024;
+pub const MAX_ARGON2_ITERATIONS: u32 = 10;
+pub const MAX_ARGON2_PARALLELISM: u32 = 4;
 const ARGON2ID: &str = "argon2id";
 
 #[derive(Clone, PartialEq, Eq)]
@@ -195,8 +198,11 @@ fn decrypt_bytes(key_bytes: &[u8; KEY_LEN], sealed: &Ciphertext) -> Result<Vec<u
 fn validate_kdf_params(params: &KdfParams) -> Result<(), CryptoError> {
     if params.algorithm != ARGON2ID
         || params.memory_kib < DEFAULT_ARGON2_MEMORY_KIB
+        || params.memory_kib > MAX_ARGON2_MEMORY_KIB
         || params.iterations < DEFAULT_ARGON2_ITERATIONS
+        || params.iterations > MAX_ARGON2_ITERATIONS
         || params.parallelism == 0
+        || params.parallelism > MAX_ARGON2_PARALLELISM
     {
         return Err(CryptoError::InvalidKdfParams);
     }
