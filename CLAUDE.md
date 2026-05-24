@@ -42,7 +42,11 @@ When your changes create orphans:
 
 The test: Every changed line should trace directly to the user's request.
 
-## 4. Goal-Driven Execution
+## 4. Sub-Agent File Paths
+
+When spawning sub-agents that need `SPEC.md` or `PRD.md`, pass absolute paths. These files are gitignored and sub-agents may run in worktrees where relative paths fail.
+
+## 5. Goal-Driven Execution
 
 **Define success criteria. Loop until verified.**
 
