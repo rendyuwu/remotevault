@@ -70,6 +70,47 @@ fn synced_local_folder_uses_cache_and_new_device_id() {
 }
 
 #[test]
+fn synced_local_folder_rejects_provider_as_cache() {
+    let provider_dir = test_dir("synced_local_folder_rejects_provider_as_cache");
+    create_local_workspace(&provider_dir, "strong passphrase", Some("Laptop")).unwrap();
+
+    let error = match open_synced_local_folder_workspace(
+        &provider_dir,
+        &provider_dir,
+        "strong passphrase",
+        Some("Desktop"),
+    ) {
+        Ok(_) => panic!("provider root used as cache"),
+        Err(error) => error,
+    };
+
+    assert_eq!(error, WorkspaceError::InvalidPath);
+    cleanup(&provider_dir);
+}
+
+#[test]
+fn synced_local_folder_rejects_cache_for_other_workspace() {
+    let provider_dir = test_dir("synced_local_folder_provider_mismatch");
+    let cache_dir = test_dir("synced_local_folder_cache_mismatch");
+    create_local_workspace(&provider_dir, "strong passphrase", Some("Laptop")).unwrap();
+    create_local_workspace(&cache_dir, "strong passphrase", Some("Other")).unwrap();
+
+    let error = match open_synced_local_folder_workspace(
+        &provider_dir,
+        &cache_dir,
+        "strong passphrase",
+        Some("Desktop"),
+    ) {
+        Ok(_) => panic!("wrong cache workspace opened"),
+        Err(error) => error,
+    };
+
+    assert_eq!(error, WorkspaceError::WorkspaceExists);
+    cleanup(&provider_dir);
+    cleanup(&cache_dir);
+}
+
+#[test]
 fn workspace_timestamps_are_rfc3339() {
     let dir = test_dir("workspace_timestamps_are_rfc3339");
     let created = create_local_workspace(&dir, "strong passphrase", Some("Laptop")).unwrap();

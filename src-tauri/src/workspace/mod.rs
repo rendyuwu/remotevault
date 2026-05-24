@@ -6,6 +6,7 @@ use crate::db::workspace::{
 };
 use crate::db::{self, DbError};
 use crate::state::OpenWorkspace;
+use rusqlite::{Connection, OpenFlags};
 use chacha20poly1305::aead::rand_core::RngCore;
 use chacha20poly1305::aead::OsRng;
 use std::fmt;
@@ -103,15 +104,24 @@ pub fn open_synced_local_folder_workspace(
     validate_workspace_dir(provider_dir)?;
     validate_workspace_dir(cache_dir)?;
     validate_passphrase(passphrase)?;
+    if provider_dir == cache_dir {
+        return Err(WorkspaceError::InvalidPath);
+    }
     let provider_db = database_path_for_workspace_dir(provider_dir);
     if !provider_db.exists() {
         return Err(WorkspaceError::WorkspaceNotFound);
     }
+    let provider_metadata = load_provider_metadata(&provider_db, passphrase)?;
 
     fs::create_dir_all(cache_dir).map_err(|_| WorkspaceError::StorageFailed)?;
     let cache_db = database_path_for_workspace_dir(cache_dir);
     let reuse_current_device = cache_db.exists();
-    if !reuse_current_device {
+    if reuse_current_device {
+        let cache_metadata = load_provider_metadata(&cache_db, passphrase)?;
+        if cache_metadata.workspace_id != provider_metadata.workspace_id {
+            return Err(WorkspaceError::WorkspaceExists);
+        }
+    } else {
         fs::copy(&provider_db, &cache_db).map_err(|_| WorkspaceError::StorageFailed)?;
     }
     open_workspace(cache_dir, passphrase, device_name, reuse_current_device)
@@ -119,6 +129,18 @@ pub fn open_synced_local_folder_workspace(
 
 pub fn database_path_for_workspace_dir(workspace_dir: &Path) -> PathBuf {
     workspace_dir.join(DB_FILE)
+}
+
+fn load_provider_metadata(
+    database_path: &Path,
+    passphrase: &str,
+) -> Result<WorkspaceMetadata, WorkspaceError> {
+    let conn = Connection::open_with_flags(database_path, OpenFlags::SQLITE_OPEN_READ_ONLY)
+        .map_err(|_| WorkspaceError::StorageFailed)?;
+    let metadata = load_workspace_metadata(&conn).map_err(map_db_error)?;
+    crypto::unwrap_workspace_key(&metadata.wrapped_key, passphrase)
+        .map_err(|_| WorkspaceError::InvalidPassphrase)?;
+    Ok(metadata)
 }
 
 fn open_workspace(
