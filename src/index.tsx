@@ -7,7 +7,10 @@ import "./assets/utilities.css";
 import { render } from "solid-js/web";
 import { HashRouter } from "@solidjs/router";
 import { App } from "./App";
+import { initTheme } from "./lib/theme";
 import { routes } from "./routes";
+
+initTheme();
 
 render(
   () => <HashRouter root={App}>{routes()}</HashRouter>,

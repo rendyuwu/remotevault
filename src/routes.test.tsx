@@ -59,6 +59,25 @@ describe("routes", () => {
     expect(screen.getByText("Production API Server")).not.toBeNull();
   });
 
+  it("renders sync, devices, security, and settings shell routes", () => {
+    localStorage.setItem("rv:launched", "1");
+    renderRoutesAt("/sync");
+    expect(screen.getByText("Sync is healthy")).not.toBeNull();
+    expect(document.querySelector(".content-narrow")).toBeNull();
+
+    renderRoutesAt("/devices");
+    expect(screen.getByText("Registered Devices")).not.toBeNull();
+    expect(document.querySelector(".content-narrow")).toBeNull();
+
+    renderRoutesAt("/security");
+    expect(screen.getByText("How RemoteVault protects your data")).not.toBeNull();
+    expect(document.querySelector(".content-narrow")).toBeNull();
+
+    renderRoutesAt("/settings");
+    expect(screen.getByText("App theme")).not.toBeNull();
+    expect(document.querySelector(".content-narrow")).toBeNull();
+  });
+
   it("renders session workspace route", () => {
     renderRoutesAt("/session");
 
