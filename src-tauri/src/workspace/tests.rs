@@ -88,6 +88,7 @@ fn synced_local_folder_rejects_provider_as_cache() {
     cleanup(&provider_dir);
 }
 
+#[cfg(unix)]
 #[test]
 fn synced_local_folder_rejects_symlink_cache_to_provider() {
     let provider_dir = test_dir("synced_local_folder_rejects_symlink_provider");
