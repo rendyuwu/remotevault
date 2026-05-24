@@ -36,13 +36,37 @@ fn open_local_workspace_unwraps_existing_key() {
 #[test]
 fn create_local_workspace_rejects_empty_passphrase() {
     let dir = test_dir("create_local_workspace_rejects_empty_passphrase");
-    let error = match create_local_workspace(&dir, "", Some("Laptop")) {
-        Ok(_) => panic!("empty passphrase created workspace"),
-        Err(error) => error,
-    };
-
-    assert_eq!(error, WorkspaceError::InvalidPassphrase);
+    for passphrase in ["", "   "] {
+        let error = match create_local_workspace(&dir, passphrase, Some("Laptop")) {
+            Ok(_) => panic!("blank passphrase created workspace"),
+            Err(error) => error,
+        };
+        assert_eq!(error, WorkspaceError::InvalidPassphrase);
+    }
     cleanup(&dir);
+}
+
+#[test]
+fn synced_local_folder_uses_cache_and_new_device_id() {
+    let provider_dir = test_dir("synced_local_folder_provider");
+    let cache_dir = test_dir("synced_local_folder_cache");
+    let created = create_local_workspace(&provider_dir, "strong passphrase", Some("Laptop")).unwrap();
+    let opened = open_synced_local_folder_workspace(
+        &provider_dir,
+        &cache_dir,
+        "strong passphrase",
+        Some("Desktop"),
+    )
+    .unwrap();
+
+    assert_eq!(opened.workspace_id, created.workspace_id);
+    assert_ne!(opened.device_id, created.device_id);
+    assert_eq!(opened.workspace_dir, cache_dir);
+    assert!(database_path_for_workspace_dir(&provider_dir).exists());
+    assert!(database_path_for_workspace_dir(&cache_dir).exists());
+
+    cleanup(&provider_dir);
+    cleanup(&cache_dir);
 }
 
 #[test]

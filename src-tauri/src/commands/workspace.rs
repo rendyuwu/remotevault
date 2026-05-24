@@ -1,6 +1,8 @@
 use super::CommandError;
 use crate::state::{AppState, WorkspaceSessionInfo, WorkspaceStateError};
-use crate::workspace::{create_local_workspace, open_local_workspace, WorkspaceError};
+use crate::workspace::{
+    create_local_workspace, open_local_workspace, open_synced_local_folder_workspace, WorkspaceError,
+};
 use std::path::PathBuf;
 use tauri::{AppHandle, Manager, State};
 
@@ -83,11 +85,25 @@ pub fn workspace_open_synced(
             folder_path,
             passphrase,
             device_name,
-            ..
+            local_cache_dir,
         } => {
-            let path = PathBuf::from(folder_path.trim());
-            let workspace = open_local_workspace(&path, &passphrase, device_name.as_deref())
-                .map_err(command_error_from_workspace)?;
+            let Some(local_cache_dir) = local_cache_dir.filter(|path| !path.trim().is_empty()) else {
+                return Err(CommandError::new(
+                    "INVALID_WORKSPACE_PATH",
+                    "Local cache path is required.",
+                    Some("localCacheDir"),
+                    true,
+                ));
+            };
+            let provider_path = PathBuf::from(folder_path.trim());
+            let cache_path = PathBuf::from(local_cache_dir.trim());
+            let workspace = open_synced_local_folder_workspace(
+                &provider_path,
+                &cache_path,
+                &passphrase,
+                device_name.as_deref(),
+            )
+            .map_err(command_error_from_workspace)?;
             let info = workspace.session_info();
             state.set_workspace(workspace).map_err(command_error_from_state)?;
             Ok(info)

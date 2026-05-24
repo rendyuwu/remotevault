@@ -91,6 +91,42 @@ pub fn open_local_workspace(
     passphrase: &str,
     device_name: Option<&str>,
 ) -> Result<OpenWorkspace, WorkspaceError> {
+    open_workspace(workspace_dir, passphrase, device_name, true)
+}
+
+pub fn open_synced_local_folder_workspace(
+    provider_dir: &Path,
+    cache_dir: &Path,
+    passphrase: &str,
+    device_name: Option<&str>,
+) -> Result<OpenWorkspace, WorkspaceError> {
+    validate_workspace_dir(provider_dir)?;
+    validate_workspace_dir(cache_dir)?;
+    validate_passphrase(passphrase)?;
+    let provider_db = database_path_for_workspace_dir(provider_dir);
+    if !provider_db.exists() {
+        return Err(WorkspaceError::WorkspaceNotFound);
+    }
+
+    fs::create_dir_all(cache_dir).map_err(|_| WorkspaceError::StorageFailed)?;
+    let cache_db = database_path_for_workspace_dir(cache_dir);
+    let reuse_current_device = cache_db.exists();
+    if !reuse_current_device {
+        fs::copy(&provider_db, &cache_db).map_err(|_| WorkspaceError::StorageFailed)?;
+    }
+    open_workspace(cache_dir, passphrase, device_name, reuse_current_device)
+}
+
+pub fn database_path_for_workspace_dir(workspace_dir: &Path) -> PathBuf {
+    workspace_dir.join(DB_FILE)
+}
+
+fn open_workspace(
+    workspace_dir: &Path,
+    passphrase: &str,
+    device_name: Option<&str>,
+    reuse_current_device: bool,
+) -> Result<OpenWorkspace, WorkspaceError> {
     validate_workspace_dir(workspace_dir)?;
     validate_passphrase(passphrase)?;
     let database_path = database_path_for_workspace_dir(workspace_dir);
@@ -102,10 +138,14 @@ pub fn open_local_workspace(
     let metadata = load_workspace_metadata(&conn).map_err(map_db_error)?;
     let workspace_key = crypto::unwrap_workspace_key(&metadata.wrapped_key, passphrase)
         .map_err(|_| WorkspaceError::InvalidPassphrase)?;
-    let device_id = load_current_device_id(&conn)
-        .map_err(map_db_error)?
-        .map(Ok)
-        .unwrap_or_else(|| generate_id("dev"))?;
+    let device_id = if reuse_current_device {
+        load_current_device_id(&conn)
+            .map_err(map_db_error)?
+            .map(Ok)
+            .unwrap_or_else(|| generate_id("dev"))?
+    } else {
+        generate_id("dev")?
+    };
     let timestamp = timestamp_now();
     upsert_current_device(&conn, &new_device(&device_id, device_name, &timestamp))
         .map_err(map_db_error)?;
@@ -122,10 +162,6 @@ pub fn open_local_workspace(
     ))
 }
 
-pub fn database_path_for_workspace_dir(workspace_dir: &Path) -> PathBuf {
-    workspace_dir.join(DB_FILE)
-}
-
 fn validate_workspace_dir(workspace_dir: &Path) -> Result<(), WorkspaceError> {
     if workspace_dir.as_os_str().is_empty() {
         return Err(WorkspaceError::InvalidPath);
@@ -134,7 +170,7 @@ fn validate_workspace_dir(workspace_dir: &Path) -> Result<(), WorkspaceError> {
 }
 
 fn validate_passphrase(passphrase: &str) -> Result<(), WorkspaceError> {
-    if passphrase.is_empty() {
+    if passphrase.trim().is_empty() {
         return Err(WorkspaceError::InvalidPassphrase);
     }
     Ok(())
