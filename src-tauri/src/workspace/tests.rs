@@ -89,6 +89,28 @@ fn synced_local_folder_rejects_provider_as_cache() {
 }
 
 #[test]
+fn synced_local_folder_rejects_symlink_cache_to_provider() {
+    let provider_dir = test_dir("synced_local_folder_rejects_symlink_provider");
+    let link_dir = test_dir("synced_local_folder_rejects_symlink_link");
+    create_local_workspace(&provider_dir, "strong passphrase", Some("Laptop")).unwrap();
+    std::os::unix::fs::symlink(&provider_dir, &link_dir).unwrap();
+
+    let error = match open_synced_local_folder_workspace(
+        &provider_dir,
+        &link_dir,
+        "strong passphrase",
+        Some("Desktop"),
+    ) {
+        Ok(_) => panic!("symlink cache used provider root"),
+        Err(error) => error,
+    };
+
+    assert_eq!(error, WorkspaceError::InvalidPath);
+    cleanup(&link_dir);
+    cleanup(&provider_dir);
+}
+
+#[test]
 fn synced_local_folder_rejects_cache_for_other_workspace() {
     let provider_dir = test_dir("synced_local_folder_provider_mismatch");
     let cache_dir = test_dir("synced_local_folder_cache_mismatch");

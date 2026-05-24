@@ -104,7 +104,7 @@ pub fn open_synced_local_folder_workspace(
     validate_workspace_dir(provider_dir)?;
     validate_workspace_dir(cache_dir)?;
     validate_passphrase(passphrase)?;
-    if provider_dir == cache_dir {
+    if same_storage_location(provider_dir, cache_dir) {
         return Err(WorkspaceError::InvalidPath);
     }
     let provider_db = database_path_for_workspace_dir(provider_dir);
@@ -182,6 +182,16 @@ fn open_workspace(
         metadata.created_at,
         workspace_key,
     ))
+}
+
+fn same_storage_location(left: &Path, right: &Path) -> bool {
+    if left == right {
+        return true;
+    }
+    match (left.canonicalize(), right.canonicalize()) {
+        (Ok(left), Ok(right)) => left == right,
+        _ => false,
+    }
 }
 
 fn validate_workspace_dir(workspace_dir: &Path) -> Result<(), WorkspaceError> {
