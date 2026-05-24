@@ -27,7 +27,32 @@ fn open_local_workspace_unwraps_existing_key() {
     let opened = open_local_workspace(&dir, "strong passphrase", Some("Desktop")).unwrap();
 
     assert_eq!(opened.workspace_id, created.workspace_id);
+    assert_eq!(opened.device_id, created.device_id);
     assert_eq!(opened.sync_provider, "local_only");
+
+    cleanup(&dir);
+}
+
+#[test]
+fn create_local_workspace_rejects_empty_passphrase() {
+    let dir = test_dir("create_local_workspace_rejects_empty_passphrase");
+    let error = match create_local_workspace(&dir, "", Some("Laptop")) {
+        Ok(_) => panic!("empty passphrase created workspace"),
+        Err(error) => error,
+    };
+
+    assert_eq!(error, WorkspaceError::InvalidPassphrase);
+    cleanup(&dir);
+}
+
+#[test]
+fn workspace_timestamps_are_rfc3339() {
+    let dir = test_dir("workspace_timestamps_are_rfc3339");
+    let created = create_local_workspace(&dir, "strong passphrase", Some("Laptop")).unwrap();
+
+    assert!(created.created_at.contains('T'));
+    assert!(created.created_at.ends_with('Z'));
+    assert!(!created.created_at.starts_with("unix-ms:"));
 
     cleanup(&dir);
 }

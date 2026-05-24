@@ -117,14 +117,16 @@ pub fn upsert_current_device(conn: &Connection, device: &DeviceInfo) -> Result<(
     Ok(())
 }
 
+pub fn load_current_device_id(conn: &Connection) -> Result<Option<String>, DbError> {
+    conn.query_row(
+        "SELECT device_id FROM device_info WHERE is_current = 1 LIMIT 1",
+        [],
+        |row| row.get(0),
+    )
+    .optional()
+    .map_err(|_| DbError::QueryFailed)
+}
+
 pub fn current_device_exists(conn: &Connection) -> Result<bool, DbError> {
-    let id: Option<String> = conn
-        .query_row(
-            "SELECT device_id FROM device_info WHERE is_current = 1 LIMIT 1",
-            [],
-            |row| row.get(0),
-        )
-        .optional()
-        .map_err(|_| DbError::QueryFailed)?;
-    Ok(id.is_some())
+    Ok(load_current_device_id(conn)?.is_some())
 }

@@ -1,6 +1,9 @@
 use crate::crypto;
 use crate::db::models::{DeviceInfo, WorkspaceMetadata};
-use crate::db::workspace::{insert_workspace_metadata, load_workspace_metadata, upsert_current_device, workspace_exists};
+use crate::db::workspace::{
+    insert_workspace_metadata, load_current_device_id, load_workspace_metadata, upsert_current_device,
+    workspace_exists,
+};
 use crate::db::{self, DbError};
 use crate::state::OpenWorkspace;
 use chacha20poly1305::aead::rand_core::RngCore;
@@ -8,7 +11,7 @@ use chacha20poly1305::aead::OsRng;
 use std::fmt;
 use std::fs;
 use std::path::{Path, PathBuf};
-use std::time::{SystemTime, UNIX_EPOCH};
+use time::OffsetDateTime;
 
 const DB_FILE: &str = "remotevault.sqlite3";
 
@@ -46,6 +49,7 @@ pub fn create_local_workspace(
     device_name: Option<&str>,
 ) -> Result<OpenWorkspace, WorkspaceError> {
     validate_workspace_dir(workspace_dir)?;
+    validate_passphrase(passphrase)?;
     fs::create_dir_all(workspace_dir).map_err(|_| WorkspaceError::StorageFailed)?;
     let database_path = database_path_for_workspace_dir(workspace_dir);
     let conn = db::open_database(&database_path).map_err(map_db_error)?;
@@ -88,6 +92,7 @@ pub fn open_local_workspace(
     device_name: Option<&str>,
 ) -> Result<OpenWorkspace, WorkspaceError> {
     validate_workspace_dir(workspace_dir)?;
+    validate_passphrase(passphrase)?;
     let database_path = database_path_for_workspace_dir(workspace_dir);
     if !database_path.exists() {
         return Err(WorkspaceError::WorkspaceNotFound);
@@ -97,7 +102,10 @@ pub fn open_local_workspace(
     let metadata = load_workspace_metadata(&conn).map_err(map_db_error)?;
     let workspace_key = crypto::unwrap_workspace_key(&metadata.wrapped_key, passphrase)
         .map_err(|_| WorkspaceError::InvalidPassphrase)?;
-    let device_id = generate_id("dev")?;
+    let device_id = load_current_device_id(&conn)
+        .map_err(map_db_error)?
+        .map(Ok)
+        .unwrap_or_else(|| generate_id("dev"))?;
     let timestamp = timestamp_now();
     upsert_current_device(&conn, &new_device(&device_id, device_name, &timestamp))
         .map_err(map_db_error)?;
@@ -121,6 +129,13 @@ pub fn database_path_for_workspace_dir(workspace_dir: &Path) -> PathBuf {
 fn validate_workspace_dir(workspace_dir: &Path) -> Result<(), WorkspaceError> {
     if workspace_dir.as_os_str().is_empty() {
         return Err(WorkspaceError::InvalidPath);
+    }
+    Ok(())
+}
+
+fn validate_passphrase(passphrase: &str) -> Result<(), WorkspaceError> {
+    if passphrase.is_empty() {
+        return Err(WorkspaceError::InvalidPassphrase);
     }
     Ok(())
 }
@@ -161,11 +176,9 @@ fn hex_encode(bytes: &[u8]) -> String {
 }
 
 fn timestamp_now() -> String {
-    let millis = SystemTime::now()
-        .duration_since(UNIX_EPOCH)
-        .map(|duration| duration.as_millis())
-        .unwrap_or_default();
-    format!("unix-ms:{}", millis)
+    OffsetDateTime::now_utc()
+        .format(&time::format_description::well_known::Rfc3339)
+        .unwrap_or_else(|_| "1970-01-01T00:00:00Z".to_string())
 }
 
 fn map_db_error(error: DbError) -> WorkspaceError {

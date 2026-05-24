@@ -83,7 +83,7 @@ CREATE TABLE connections (
     port INTEGER NOT NULL CHECK (port BETWEEN 1 AND 65535),
     username TEXT,
     auth_source TEXT NOT NULL DEFAULT 'none' CHECK (auth_source IN ('none', 'agent', 'vault_item', 'local_key_path')),
-    auth_vault_item_id TEXT REFERENCES vault_items(id) ON DELETE SET NULL,
+    auth_vault_item_id TEXT REFERENCES vault_items(id) ON DELETE RESTRICT,
     auth_local_key_path TEXT,
     tags_json TEXT NOT NULL DEFAULT '[]',
     notes TEXT,

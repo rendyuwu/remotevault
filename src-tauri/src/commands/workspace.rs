@@ -75,16 +75,23 @@ pub fn workspace_open_local(
 #[tauri::command]
 pub fn workspace_open_synced(
     _app: AppHandle,
-    _state: State<'_, AppState>,
+    state: State<'_, AppState>,
     request: WorkspaceOpenSyncedRequest,
 ) -> Result<WorkspaceSessionInfo, CommandError> {
     match request {
-        WorkspaceOpenSyncedRequest::LocalFolder { .. } => Err(CommandError::new(
-            "SYNC_BOOTSTRAP_UNAVAILABLE",
-            "Synced workspace bootstrap is not available yet.",
-            None,
-            true,
-        )),
+        WorkspaceOpenSyncedRequest::LocalFolder {
+            folder_path,
+            passphrase,
+            device_name,
+            ..
+        } => {
+            let path = PathBuf::from(folder_path.trim());
+            let workspace = open_local_workspace(&path, &passphrase, device_name.as_deref())
+                .map_err(command_error_from_workspace)?;
+            let info = workspace.session_info();
+            state.set_workspace(workspace).map_err(command_error_from_state)?;
+            Ok(info)
+        }
         WorkspaceOpenSyncedRequest::S3 { .. } => Err(CommandError::new(
             "UNSUPPORTED_PROVIDER",
             "S3 workspace bootstrap is not available yet.",
@@ -119,6 +126,14 @@ fn resolve_workspace_dir(
     let name = workspace_name
         .filter(|name| !name.trim().is_empty())
         .unwrap_or_else(|| "local".to_string());
+    if name.contains('/') || name.contains('\\') || name == "." || name == ".." || name.contains("..") {
+        return Err(CommandError::new(
+            "INVALID_WORKSPACE_PATH",
+            "Workspace name is invalid.",
+            Some("workspaceName"),
+            true,
+        ));
+    }
     Ok(base.join("workspaces").join(name))
 }
 
